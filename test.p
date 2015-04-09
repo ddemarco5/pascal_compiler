@@ -1,5 +1,5 @@
 program Hello(input, output);
-var x : integer;
+var x,y,z : integer;
 
 function foo(a: integer): integer;
 begin

@@ -65,7 +65,8 @@ extern node_t *tmp;
 
 program:
 	{ top_scope = scope_push(top_scope); }
-	PROGRAM ID '(' identifier_list ')' ';' 
+	PROGRAM ID '(' identifier_list ')' ';'
+
 	declarations
 	subprogram_declarations
 	compound_statement
@@ -228,7 +229,7 @@ factor
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
 			}
-			fprintf(stderr, "SCOPE TABLE TYPE: %s\n", tmp->name);
+			fprintf(stderr, "SCOPE TABLE TYPE: %d\n", tmp->type);
 			$$ = make_id(tmp); 
 		}
 	| ID '[' expression ']'
