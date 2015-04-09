@@ -139,19 +139,23 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		{ fprintf(stderr, "\n\nPRINTING TREE:\n");
+		/*{ fprintf(stderr, "\n\nPRINTING TREE:\n");
 			print_tree($3,0); 
 		  fprintf(stderr, "\n\n");
-		}
+		}*/
 	| procedure_statement
 	| compound_statement
-	| IF expression THEN statement ELSE statement
-	| WHILE expression DO statement 
+	| { top_scope = scope_push(top_scope); }
+	  IF expression THEN statement ELSE statement
+	  { top_scope = scope_pop(top_scope); }
+	| { top_scope = scope_push(top_scope); }
+	  WHILE expression DO statement 
+	  { top_scope = scope_pop(top_scope); }
 	;
 
 variable
 	: ID
-	| ID '[' expression ']'
+	| ID '[' expression ']' {fprintf(stderr, "\nTriggering the gay one.\n");}
 	;
 
 procedure_statement
@@ -164,9 +168,9 @@ procedure_statement
 
 expression_list
 	: expression
-		{ $$ = $1; }
+		{ $$ = $1;}
 	| expression_list ',' expression
-		{ $$ = make_tree(COMMA, $1, $3); }
+		{ $$ = make_tree(COMMA, $1, $3);}
 	;
 
 expression
@@ -205,6 +209,11 @@ factor
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
 			}
+
+			fprintf(stderr, "\n\nPRINTING ARRAY_ACCESS TREE:\n");
+			print_tree($3,0); 
+		  	fprintf(stderr, "\n\n");
+	
 			$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
 		}
 	| ID '(' expression_list ')'
@@ -236,6 +245,7 @@ main()
 	tmp = NULL;
 
 	yyparse();
+	
 }
 
 yyerror(char *message)

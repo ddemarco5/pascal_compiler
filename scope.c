@@ -65,6 +65,9 @@ node_t *scope_search_all( scope_t *curr_scope, char *name )
 /* push new scope */
 scope_t *scope_push( scope_t *top )
 {
+
+	fprintf(stderr, "\nSCOPE -- PUSHING NEW SCOPE\n");
+
 	scope_t *new_scope = make_scope();
 	assert( new_scope != NULL );
 
@@ -75,6 +78,8 @@ scope_t *scope_push( scope_t *top )
 /* pop top scope */
 scope_t *scope_pop( scope_t *top )
 {
+	fprintf(stderr, "\nSCOPE -- POPPING SCOPE\n");
+	
 	scope_t *tmp;
 
 	if (top != NULL) {

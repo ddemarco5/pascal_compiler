@@ -81,6 +81,10 @@ void print_tree(tree_t *t, int spaces)
 	case RELOP:
 		fprintf(stderr, "[RELOP:%d]", t->attribute.opval);
 		break;
+	case ARRAY_ACCESS:
+		fprintf(stderr, "[ARRAY_ACCESS:%d]", t->attribute.opval);
+		break;
+
 	default:
 		fprintf(stderr, "[UNKNOWN]");
 		break;
