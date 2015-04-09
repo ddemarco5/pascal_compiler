@@ -14,6 +14,17 @@ typedef struct scope_s {
 }
 scope_t;
 
+/* list of names to add types to */
+typedef struct namelist_s {
+	char* name;
+	struct namelist_s *next;
+} namelist_t;
+
+/* Name list functions */
+namelist_t *make_list(char *name);
+void flush_namelist(namelist_t *namelist);
+void insert_name(namelist_t *namelist, char* name);
+
 /* constructor */
 scope_t *make_scope();
 

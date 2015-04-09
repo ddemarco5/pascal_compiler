@@ -2,6 +2,35 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "scope.h"
+#include <string.h>
+
+/* create a stack of names */
+namelist_t *make_list(char *name)
+{
+	namelist_t *n = (namelist_t*)malloc(sizeof(namelist_t));
+	n->name = (char*)malloc(sizeof(char*)*strlen(name));
+	n->next = NULL;
+	return n;
+}
+
+void flush_namelist(namelist_t *namelist){
+	
+	namelist_t *n = namelist;
+	namelist_t *p;
+	while(n->next != NULL){
+		p = n;
+		n = p->next;
+		free(p->name);
+		free(p);
+	}
+}
+
+void insert_name(namelist_t *namelist, char* name){
+	namelist_t *n = namelist;
+	while(n->next != NULL) n = n->next;
+	namelist_t *new = make_list(name);
+	n->next = new;
+}
 
 
 /* constructor */
@@ -111,14 +140,4 @@ int hashpjw( char *s )
 	}
 	return h % HASH_SIZE;
 }
-
-
-
-
-
-
-
-
-
-
 

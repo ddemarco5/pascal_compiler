@@ -9,6 +9,7 @@
 
 extern scope_t *top_scope;
 extern node_t *tmp;
+extern namelist_t *nametmp;
 
 %}
 
@@ -267,6 +268,7 @@ factor
 	
 scope_t *top_scope;
 node_t *tmp;
+namelist_t *nametmp;
 
 main()
 {
