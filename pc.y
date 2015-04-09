@@ -45,6 +45,7 @@ extern node_t *tmp;
 %token	BBEGIN END
 %token	IF THEN ELSE
 %token	WHILE DO
+%token  FOR TO
 
 %token	FUNCTION_CALL
 %token	ARRAY_ACCESS
@@ -56,6 +57,8 @@ extern node_t *tmp;
 %type <tval> simple_expression
 %type <tval> term
 %type <tval> factor
+
+%type <tval> array_variable
 
 
 %%
@@ -151,11 +154,35 @@ statement
 	| { top_scope = scope_push(top_scope); }
 	  WHILE expression DO statement 
 	  { top_scope = scope_pop(top_scope); }
+	| { top_scope = scope_push(top_scope); }
+	  FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
+	  { top_scope = scope_pop(top_scope); }
+
 	;
 
 variable
 	: ID
-	| ID '[' expression ']' {fprintf(stderr, "\nTriggering the gay one.\n");}
+	/*| ID '[' expression ']' {fprintf(stderr, "\nTriggering the gay one.\n");}*/
+	| array_variable
+	;
+
+/*this is duplicate of the array access in factor, but necessary to 
+access left side of assignop statement.*/
+array_variable
+	: ID '[' expression ']'
+		{ 
+			if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
+				fprintf(stderr, "Name %s used but not defined\n", $1);
+				exit(1);
+			}
+
+			fprintf(stderr, "\n\nPRINTING LEFT SIDE ARRAY_ACCESS TREE:\n");
+			print_tree($3,0); 
+		  	fprintf(stderr, "\n\n");
+	
+			$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
+		}
+
 	;
 
 procedure_statement
@@ -196,11 +223,12 @@ term
 
 factor
 	: ID
-		{ 
+		{
 			if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
 			}
+			fprintf(stderr, "SCOPE TABLE TYPE: %s\n", tmp->name);
 			$$ = make_id(tmp); 
 		}
 	| ID '[' expression ']'

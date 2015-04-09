@@ -6,6 +6,9 @@ typedef struct node_s
 	char *name;
 	int type;	/* VAR, FUNCTION, PROCEDURE */
 	/* extra information */
+	/* array bounds */
+	int astart;
+	int aend;
 
 	struct node_s *next;	
 } 

@@ -28,6 +28,7 @@ node_t *scope_search( scope_t *scope, char *name )
 		index = hashpjw(name);
 		head = scope->table[index];
 
+
 		return node_search(head, name);
 	}
 	else return NULL;

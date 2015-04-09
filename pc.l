@@ -32,6 +32,8 @@ whitespace	[ \t]+
 "else"		{ echo("ELSE"); return ELSE; }
 "while"		{ echo("WHILE"); return WHILE; }
 "do"		{ echo("DO"); return DO; }
+"for"		{ echo("FOR"); return FOR;}
+"to"		{ echo("TO"); return TO; }
 "not"		{ echo("NOT"); return NOT; }
 
 ".."		{ echo("DOTDOT"); return DOTDOT; }
