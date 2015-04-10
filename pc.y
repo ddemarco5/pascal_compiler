@@ -94,7 +94,10 @@ identifier_list
 declarations
 	: 
 	declarations VAR {nametmp = create_namelist();} identifier_list ':' type ';'
-	{print_names(nametmp); flush_namelist(nametmp);}
+	{
+	print_names(nametmp);
+	//flush_namelist(nametmp);
+	}
 	| /* empty */
 	;
 
@@ -104,8 +107,9 @@ type
 	;
 
 standard_type
-	: INTEGER
-	| REAL
+	: INTEGER {typify_namelist(top_scope, nametmp, INTEGER);}
+	| REAL {typify_namelist(top_scope, nametmp, REAL);}
+
 	;
 
 subprogram_declarations

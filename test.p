@@ -1,12 +1,15 @@
 program Hello(input, output);
 var x,y,z : integer;
+var H : real;
 
 function foo(a: integer): integer;
 begin
+  H := 0 + H;
   if x = 0 then x := 1
   else x := 2;
   while x = 1 do x := x + x
 end;
+
 
 begin
   x := (5+1)*3;

@@ -23,6 +23,7 @@ typedef struct namelist_s {
 /* Name list functions */
 namelist_t *create_namelist();
 namelist_t *write_namelist(namelist_t *n, char *name);
+void typify_namelist(scope_t *scope, namelist_t *namelist, int type);
 void flush_namelist(namelist_t *namelist);
 void insert_name(namelist_t *namelist, char* name);
 void print_names(namelist_t *namelist);

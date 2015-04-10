@@ -18,22 +18,29 @@ namelist_t *write_namelist(namelist_t *n, char *name)
 	n->next = NULL;
 	return n;
 }
-/* clear and delete stack of names*/
-void flush_namelist(namelist_t *namelist){
-	
-	namelist->next = NULL;
-	free(namelist->name);
-	free(namelist);
-	/*namelist_t *n = namelist;
-	namelist_t *p;
-	while(n->next != NULL){
-		p = n;
-		n = p->next;*/
-		/*set the next to NULL*/
-		/*p->next = NULL;
-		free(p->name);
-		free(p);
-	}*/
+
+/* fills the namelist with the type passed in */
+void typify_namelist(scope_t *scope, namelist_t *namelist, int type){
+	namelist_t *n = namelist;
+	node_t *found;
+	while(n != NULL){
+		found = scope_search(scope, n->name);
+		if(found != NULL) found->type = type;
+		n = n->next;
+	}
+	/*flush_namelist(namelist);*/
+}
+
+/* clear and delete stack of names (recursive just for you Tino)*/
+void flush_namelist(namelist_t *namelist){	
+	if(namelist->next != NULL){
+		flush_namelist(namelist->next);
+		free(namelist->name);
+		free(namelist);
+		namelist->name = NULL;
+		namelist->next = NULL;
+		namelist = NULL;
+	}
 }
 /* insert a name on to the stack */
 void insert_name(namelist_t *namelist, char* name){
