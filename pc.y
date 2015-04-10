@@ -69,6 +69,7 @@ program:
 	 top_scope = scope_push(top_scope);
 	 nametmp = create_namelist();
 	}
+	/* Right now we aren't putting a type for input and output in the symbol table */
 	PROGRAM ID '(' identifier_list ')' ';' 
 	{ print_names(nametmp); flush_namelist(nametmp); }
 	declarations
@@ -94,10 +95,7 @@ identifier_list
 declarations
 	: 
 	declarations VAR {nametmp = create_namelist();} identifier_list ':' type ';'
-	{
-	print_names(nametmp);
-	flush_namelist(nametmp);
-	}
+	{print_names(nametmp); flush_namelist(nametmp);}
 	| /* empty */
 	;
 
@@ -136,8 +134,11 @@ arguments
 	;
 
 parameter_list
-	: identifier_list ':' type
-	| parameter_list ';' identifier_list ':' type
+	: {nametmp = create_namelist();}
+	identifier_list ':' type
+	 {print_names(nametmp); flush_namelist(nametmp);}
+	| parameter_list ';'{nametmp = create_namelist();} identifier_list ':' type
+	{print_names(nametmp); flush_namelist(nametmp);}
 	;
 
 

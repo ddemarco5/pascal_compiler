@@ -28,7 +28,7 @@ void typify_namelist(scope_t *scope, namelist_t *namelist, int type){
 		if(found != NULL) found->type = type;
 		n = n->next;
 	}
-	/*flush_namelist(namelist);*/
+	//flush_namelist(namelist);
 }
 
 /* clear and delete stack of names (recursive just for you Tino)*/
