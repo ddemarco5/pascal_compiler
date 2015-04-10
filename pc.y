@@ -65,9 +65,12 @@ extern namelist_t *nametmp;
 %%
 
 program:
-	{ top_scope = scope_push(top_scope); }
-	PROGRAM ID '(' identifier_list ')' ';'
-
+	{
+	 top_scope = scope_push(top_scope);
+	 nametmp = create_namelist();
+	}
+	PROGRAM ID '(' identifier_list ')' ';' 
+	{ print_names(nametmp); flush_namelist(nametmp); }
 	declarations
 	subprogram_declarations
 	compound_statement
@@ -77,13 +80,21 @@ program:
 
 identifier_list
 	: ID
-		{ scope_insert(top_scope, $1); }
+		{ 
+		scope_insert(top_scope, $1);
+		insert_name(nametmp, $1);
+		}
 	| identifier_list ',' ID
-		{ scope_insert(top_scope, $3); }
+		{ 
+		scope_insert(top_scope, $3); 
+		insert_name(nametmp, $3);
+		}
 	;
 
 declarations
-	: declarations VAR identifier_list ':' type ';'
+	: 
+	declarations VAR {nametmp = create_namelist();} identifier_list ':' type ';'
+	{print_names(nametmp); flush_namelist(nametmp);}
 	| /* empty */
 	;
 

@@ -21,9 +21,11 @@ typedef struct namelist_s {
 } namelist_t;
 
 /* Name list functions */
-namelist_t *make_list(char *name);
+namelist_t *create_namelist();
+namelist_t *write_namelist(namelist_t *n, char *name);
 void flush_namelist(namelist_t *namelist);
 void insert_name(namelist_t *namelist, char* name);
+void print_names(namelist_t *namelist);
 
 /* constructor */
 scope_t *make_scope();
