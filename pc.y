@@ -96,7 +96,7 @@ declarations
 	declarations VAR {nametmp = create_namelist();} identifier_list ':' type ';'
 	{
 	print_names(nametmp);
-	//flush_namelist(nametmp);
+	flush_namelist(nametmp);
 	}
 	| /* empty */
 	;

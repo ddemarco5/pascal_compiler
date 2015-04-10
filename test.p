@@ -4,7 +4,7 @@ var H : real;
 
 function foo(a: integer): integer;
 begin
-  H := 0 + H;
+  H := H + 0;
   if x = 0 then x := 1
   else x := 2;
   while x = 1 do x := x + x
