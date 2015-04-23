@@ -122,11 +122,34 @@ subprogram_declaration
 
 subprogram_head
 	: FUNCTION ID 
-		{ top_scope = scope_push(top_scope); }
+		{ 
+			top_scope = scope_push(top_scope);
+			nametmp = create_namelist();
+			insert_name(nametmp, $2);
+			typify_namelist(top_scope, nametmp, FUNCTION);
+			print_names(nametmp);
+			flush_namelist(nametmp);
+		}
 		arguments ':' standard_type ';'
 	| PROCEDURE ID 
-		{ top_scope = scope_push(top_scope); }
+		{ 
+			top_scope = scope_push(top_scope);
+			nametmp = create_namelist();
+			insert_name(nametmp, $2);
+			typify_namelist(top_scope, nametmp, FUNCTION);
+			print_names(nametmp);
+			flush_namelist(nametmp);
+		}
 		arguments ';'
+	| PROCEDURE ID ';'
+		{ 
+			top_scope = scope_push(top_scope);
+			nametmp = create_namelist();
+			insert_name(nametmp, $2);
+			typify_namelist(top_scope, nametmp, FUNCTION);
+			print_names(nametmp);
+			flush_namelist(nametmp);
+		}
 	;
 
 arguments

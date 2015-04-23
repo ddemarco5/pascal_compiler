@@ -1,7 +1,11 @@
 program Hello(input, output);
 var x,y,z : integer;
 var H : real;
-var H : integer;
+
+procedure boo;
+begin
+end;
+
 
 function foo(a: integer): integer;
 begin
