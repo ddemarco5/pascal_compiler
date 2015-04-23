@@ -4,34 +4,63 @@
 #include "scope.h"
 #include <string.h>
 
-/* create a stack of names */
-namelist_t *make_list(char *name)
-{
+/* instantiate stack of names */
+namelist_t *create_namelist(){
 	namelist_t *n = (namelist_t*)malloc(sizeof(namelist_t));
+	return n;
+}
+
+/* write to namelist that has been instantiated */
+namelist_t *write_namelist(namelist_t *n, char *name)
+{
 	n->name = (char*)malloc(sizeof(char*)*strlen(name));
+	strcpy(n->name, name);
 	n->next = NULL;
 	return n;
 }
 
-void flush_namelist(namelist_t *namelist){
-	
+/* fills the namelist with the type passed in */
+void typify_namelist(scope_t *scope, namelist_t *namelist, int type){
 	namelist_t *n = namelist;
-	namelist_t *p;
-	while(n->next != NULL){
-		p = n;
-		n = p->next;
-		free(p->name);
-		free(p);
+	node_t *found;
+	while(n != NULL){
+		found = scope_search(scope, n->name);
+		if(found != NULL) found->type = type;
+		n = n->next;
 	}
+	//flush_namelist(namelist);
 }
 
+/* clear and delete stack of names (recursive just for you Tino)*/
+void flush_namelist(namelist_t *namelist){	
+	if(namelist->next != NULL){
+		flush_namelist(namelist->next);
+		free(namelist->name);
+		free(namelist);
+		namelist->name = NULL;
+		namelist->next = NULL;
+		namelist = NULL;
+	}
+}
+/* insert a name on to the stack */
 void insert_name(namelist_t *namelist, char* name){
 	namelist_t *n = namelist;
 	while(n->next != NULL) n = n->next;
-	namelist_t *new = make_list(name);
-	n->next = new;
+	namelist_t *new = write_namelist(create_namelist(), name);
+	/* checks to see if we're at the beginning of the list */
+	if(n->name == NULL) write_namelist(namelist, name);
+	else n->next = new;
 }
 
+/* print the stack */
+void print_names(namelist_t *namelist){
+	fprintf(stderr, "\nNAMESTACK: ||%s||, ", namelist->name);
+	while(namelist->next != NULL){
+		namelist = namelist->next;
+		fprintf(stderr, " ||%s||,", namelist->name);
+	}	
+	fprintf(stderr, "\n");
+}
 
 /* constructor */
 scope_t *make_scope()
