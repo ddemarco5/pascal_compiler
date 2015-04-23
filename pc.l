@@ -14,6 +14,7 @@ void echo(char *);
 ident		[a-zA-Z][a-zA-Z0-9]*
 number		[0-9]+
 whitespace	[ \t]+
+%x COMMENT
 
 %%
 
@@ -32,8 +33,6 @@ whitespace	[ \t]+
 "else"		{ echo("ELSE"); return ELSE; }
 "while"		{ echo("WHILE"); return WHILE; }
 "do"		{ echo("DO"); return DO; }
-"for"		{ echo("FOR"); return FOR;}
-"to"		{ echo("TO"); return TO; }
 "not"		{ echo("NOT"); return NOT; }
 
 ".."		{ echo("DOTDOT"); return DOTDOT; }
@@ -61,6 +60,12 @@ whitespace	[ \t]+
 {whitespace}	{ ; }
 \n			{ fprintf(stderr,"%s", yytext); }
 .			{ fprintf(stderr, "{%c}", yytext[0]); return yytext[0]; }
+
+"//"[^\n]*\n    { /* do nothing for comments*/; }
+"(*"            { BEGIN(COMMENT); }
+<COMMENT>\n     { ; }
+<COMMENT>.      { ; }
+<COMMENT>"*)"   { BEGIN(INITIAL); } /* reset lex to normal state */
 
 %%
 
