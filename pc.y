@@ -186,10 +186,11 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		/*{ fprintf(stderr, "\n\nPRINTING TREE:\n");
-			print_tree($3,0); 
-		  fprintf(stderr, "\n\n");
-		}*/
+		{ 	
+			//fprintf(stderr, "\n\nPRINTING TREE:\n");
+			//print_tree($3,0); 
+		  	//fprintf(stderr, "\n\n");
+		}
 	| procedure_statement
 	| compound_statement
 	| { top_scope = scope_push(top_scope); }
@@ -206,6 +207,13 @@ statement
 
 variable
 	: ID
+	{
+		if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
+			fprintf(stderr, "Assignment name %s used but not defined\n", $1);
+			exit(1);
+		}
+
+	}
 	/*| ID '[' expression ']' {fprintf(stderr, "\nTriggering the gay one.\n");}*/
 	| array_variable
 	;
