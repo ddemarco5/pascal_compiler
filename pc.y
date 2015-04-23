@@ -41,7 +41,7 @@ extern namelist_t *nametmp;
 %token	PROGRAM
 %token	VAR
 %token	ARRAY OF DOTDOT
-%token	INTEGER REAL
+%token	INTEGER REAL BOOLEAN
 %token	FUNCTION PROCEDURE
 %token	BBEGIN END
 %token	IF THEN ELSE

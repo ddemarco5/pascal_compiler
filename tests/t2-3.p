@@ -4,6 +4,6 @@ program main( input, output );
   var x: real;
 begin
   a := a + 1.23;
-  x := x + 123
+  x := x + 123;
 end.
 

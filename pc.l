@@ -24,6 +24,7 @@ whitespace	[ \t]+
 "of"		{ echo("OF"); return OF; }
 "integer"	{ echo("INTEGER"); return INTEGER; }
 "real"		{ echo("REAL"); return REAL; }
+"boolean"	{ echo("BOOLEAN"); return BOOLEAN; }
 "function"	{ echo("FUNCTION"); return FUNCTION; }
 "procedure"	{ echo("PROCEDURE"); return PROCEDURE; }
 "begin"		{ echo("BBEGIN"); return BBEGIN; }

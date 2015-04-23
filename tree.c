@@ -24,7 +24,6 @@ int get_branch_type(tree_t *branch){
 			fprintf(stderr, "ERROR FINDING TYPE\n");
 			exit(1);
 	}
-
 }
 
 /* constructors */
