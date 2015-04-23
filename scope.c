@@ -98,7 +98,7 @@ node_t *scope_insert( scope_t *scope, char *name )
 	int index;
 	node_t *head;
 	if(scope_search(scope, name) != NULL){
-		fprintf(stderr, "ERROR: Variable %s already exists. Quitting.\n", name);
+		fprintf(stderr, "ERROR: local Object %s already exists. Quitting.\n", name);
 		exit(1);
 	}
 	if (scope != NULL) {
