@@ -1,6 +1,7 @@
 program Hello(input, output);
 var x,y,z : integer;
 var H : real;
+var H : integer;
 
 function foo(a: integer): integer;
 begin
@@ -13,6 +14,6 @@ end;
 
 begin
   x := (5+1)*3;
-  x[1+1] := x[2+2];
-  for x := 0 to 10 do x := x + 1
+  x[1+1] := x[2+x]
+  //for x := 0 to 10 do x := x + 1
 end.
