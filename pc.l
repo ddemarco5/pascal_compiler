@@ -24,7 +24,6 @@ whitespace	[ \t]+
 "of"		{ echo("OF"); return OF; }
 "integer"	{ echo("INTEGER"); return INTEGER; }
 "real"		{ echo("REAL"); return REAL; }
-"boolean"	{ echo("BOOLEAN"); return BOOLEAN; }
 "function"	{ echo("FUNCTION"); return FUNCTION; }
 "procedure"	{ echo("PROCEDURE"); return PROCEDURE; }
 "begin"		{ echo("BBEGIN"); return BBEGIN; }
@@ -35,7 +34,8 @@ whitespace	[ \t]+
 "while"		{ echo("WHILE"); return WHILE; }
 "do"		{ echo("DO"); return DO; }
 "not"		{ echo("NOT"); return NOT; }
-
+"for"		{ echo("FOR"); return FOR; }
+"to"		{ echo("TO"); return TO; }
 ".."		{ echo("DOTDOT"); return DOTDOT; }
 ":="		{ echo("ASSIGNOP"); return ASSIGNOP; }
 

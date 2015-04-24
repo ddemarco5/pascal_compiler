@@ -41,7 +41,7 @@ extern namelist_t *nametmp;
 %token	PROGRAM
 %token	VAR
 %token	ARRAY OF DOTDOT
-%token	INTEGER REAL BOOLEAN
+%token	INTEGER REAL
 %token	FUNCTION PROCEDURE
 %token	BBEGIN END
 %token	IF THEN ELSE
@@ -58,9 +58,8 @@ extern namelist_t *nametmp;
 %type <tval> simple_expression
 %type <tval> term
 %type <tval> factor
-
 %type <tval> array_variable
-
+%type <tval> variable
 
 %%
 
@@ -186,32 +185,56 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		{ 	
-			//fprintf(stderr, "\n\nPRINTING TREE:\n");
-			//print_tree($3,0); 
-		  	//fprintf(stderr, "\n\n");
-		}
+		/*{ 	
+			fprintf(stderr, "\n\nPRINTING TREE:\n");
+			print_tree($3,0); 
+		  	fprintf(stderr, "\n\n");
+		}*/
 	| procedure_statement
 	| compound_statement
-	| { top_scope = scope_push(top_scope); }
+	| /*{ top_scope = scope_push(top_scope); }*/
 	  IF expression THEN statement ELSE statement
-	  { top_scope = scope_pop(top_scope); }
-	| { top_scope = scope_push(top_scope); }
+	  	{ 
+			if($2->type != RELOP){
+				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
+				exit(1);
+			}
+	  		/*top_scope = scope_pop(top_scope);*/
+		}
+	| /*{ top_scope = scope_push(top_scope); }*/
 	  WHILE expression DO statement 
-	  { top_scope = scope_pop(top_scope); }
-	| { top_scope = scope_push(top_scope); }
+	  { 
+			if($2->type != RELOP){
+				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
+				exit(1);
+			}
+	  		/*top_scope = scope_pop(top_scope);*/
+	  }
+	| /*{ top_scope = scope_push(top_scope); }*/
 	  FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
-	  { top_scope = scope_pop(top_scope); }
+	  { 
+	  		fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
+	  		if($4->type != $6->type){
+				fprintf(stderr, "ERROR: Expressions not same type.\n");
+				exit(1);
+			}
+			if(($2->attribute.sval->type != REAL && $4->type == RNUM)||($2->attribute.sval->type != INTEGER && $4->type == INUM)){
+				fprintf(stderr, "ERROR: Incompatable variable in FOR statement.\n");
+				exit(1);
+			}
+			/*top_scope = scope_pop(top_scope);*/
+	  }
 
 	;
 
 variable
 	: ID
-	{
+	{	
 		if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
 			fprintf(stderr, "Assignment name %s used but not defined\n", $1);
 			exit(1);
 		}
+		$$ = make_id(tmp);
 
 	}
 	/*| ID '[' expression ']' {fprintf(stderr, "\nTriggering the gay one.\n");}*/
