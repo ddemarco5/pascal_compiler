@@ -20,7 +20,7 @@ extern namelist_t *nametmp;
 	char *sval;
 	int opval;
 
-	/* semantic + gencode */
+/* semantic + gencode */
 	tree_t *tval;
 }
 
@@ -109,7 +109,6 @@ type
 standard_type
 	: INTEGER {typify_namelist(top_scope, nametmp, INTEGER);}
 	| REAL {typify_namelist(top_scope, nametmp, REAL);}
-
 	;
 
 subprogram_declarations
@@ -191,7 +190,7 @@ statement
 		/*{ 	
 			fprintf(stderr, "\n\nPRINTING TREE:\n");
 			print_tree($3,0); 
-		  	fprintf(stderr, "\n\n");
+			fprintf(stderr, "\n\n");
 		}*/
 	| procedure_statement
 	| compound_statement
@@ -202,9 +201,8 @@ statement
 				exit(1);
 			}
 		}
-
 	| IF expression THEN statement ELSE statement
-	  	{ 
+		{ 
 			if($2->type != RELOP){
 				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
 				exit(1);
@@ -219,8 +217,8 @@ statement
 	  }
 	| FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
 	  { 
-	  		fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
-	  		if($4->type != $6->type){
+			fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
+			if($4->type != $6->type){
 				fprintf(stderr, "ERROR: Expressions not same type.\n");
 				exit(1);
 			}
@@ -229,7 +227,6 @@ statement
 				exit(1);
 			}
 	  }
-
 	;
 
 variable
@@ -250,7 +247,22 @@ variable
 access left side of assignop statement.*/
 array_variable
 	: ID '[' expression ']'
-		{ 
+		{
+			int x;
+			switch($3->type) {
+				case ID:
+					x = ($3->attribute.sval)->type;
+					if( x != INTEGER){
+						fprintf(stderr, "Non integer type used to index array.\n");
+						exit(1);
+					}
+					break;
+				case RNUM:
+					fprintf(stderr, "Non integer type used to index array.\n");
+					exit(1);
+					break;
+			}
+
 			if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
@@ -258,11 +270,10 @@ array_variable
 
 			fprintf(stderr, "\n\nPRINTING LEFT SIDE ARRAY_ACCESS TREE:\n");
 			print_tree($3,0); 
-		  	fprintf(stderr, "\n\n");
-	
+			fprintf(stderr, "\n\n");
+
 			$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
 		}
-
 	;
 
 procedure_statement
@@ -318,11 +329,11 @@ factor
 				exit(1);
 			}
 
-			fprintf(stderr, "\n\nPRINTING ARRAY_ACCESS TREE:\n");
+fprintf(stderr, "\n\nPRINTING ARRAY_ACCESS TREE:\n");
 			print_tree($3,0); 
-		  	fprintf(stderr, "\n\n");
-	
-			$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
+			fprintf(stderr, "\n\n");
+
+$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
 		}
 	| ID '(' expression_list ')'
 		{ 
@@ -343,7 +354,7 @@ factor
 	;
 
 %%
-	
+
 scope_t *top_scope;
 node_t *tmp;
 namelist_t *nametmp;
@@ -353,8 +364,8 @@ main()
 	top_scope = NULL;
 	tmp = NULL;
 
-	yyparse();
-	
+yyparse();
+
 }
 
 yyerror(char *message)
