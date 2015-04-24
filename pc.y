@@ -201,29 +201,23 @@ statement
 				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
 				exit(1);
 			}
-	  		/*top_scope = scope_pop(top_scope);*/
 		}
 
-	| /*{ top_scope = scope_push(top_scope); }*/
-	  IF expression THEN statement ELSE statement
+	| IF expression THEN statement ELSE statement
 	  	{ 
 			if($2->type != RELOP){
 				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
 				exit(1);
 			}
-	  		/*top_scope = scope_pop(top_scope);*/
 		}
-	| /*{ top_scope = scope_push(top_scope); }*/
-	  WHILE expression DO statement 
+	| WHILE expression DO statement 
 	  { 
 			if($2->type != RELOP){
 				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
 				exit(1);
 			}
-	  		/*top_scope = scope_pop(top_scope);*/
 	  }
-	| /*{ top_scope = scope_push(top_scope); }*/
-	  FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
+	| FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
 	  { 
 	  		fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
 	  		if($4->type != $6->type){
@@ -234,7 +228,6 @@ statement
 				fprintf(stderr, "ERROR: Incompatable variable in FOR statement.\n");
 				exit(1);
 			}
-			/*top_scope = scope_pop(top_scope);*/
 	  }
 
 	;
