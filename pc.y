@@ -44,9 +44,12 @@ extern namelist_t *nametmp;
 %token	INTEGER REAL
 %token	FUNCTION PROCEDURE
 %token	BBEGIN END
-%token	IF THEN ELSE
+%nonassoc NO_ELSE
+%nonassoc ELSE
+%token	IF THEN
+
 %token	WHILE DO
-%token  FOR TO
+%token  	FOR TO
 
 %token	FUNCTION_CALL
 %token	ARRAY_ACCESS
@@ -192,6 +195,15 @@ statement
 		}*/
 	| procedure_statement
 	| compound_statement
+	| IF expression THEN statement %prec NO_ELSE
+		{ 
+			if($2->type != RELOP){
+				fprintf(stderr, "ERROR: Non-boolean in expression.\n");
+				exit(1);
+			}
+	  		/*top_scope = scope_pop(top_scope);*/
+		}
+
 	| /*{ top_scope = scope_push(top_scope); }*/
 	  IF expression THEN statement ELSE statement
 	  	{ 
