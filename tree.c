@@ -21,7 +21,7 @@ int get_branch_type(tree_t *branch){
 			return RNUM;
 			break;
 		default:
-			fprintf(stderr, "ERROR FINDING TYPE\n");
+			fprintf(stderr, "ERROR FINDING TYPE (%d)\n", branch->type);
 			exit(1);
 	}
 }
@@ -79,39 +79,38 @@ void print_tree(tree_t *t, int spaces)
 		  int i;
 
 		  if (t == NULL)
-					 return;
+			 return;
 
 		  for (i=0; i<spaces; i++) {
-					 fprintf(stderr, " ");
+			 fprintf(stderr, " ");
 		  }
 
 		  /* process root */
 		  switch(t->type) {
-					 case ID:
-								fprintf(stderr, "[ID:%s]", (t->attribute.sval)->name);
-								break;
-					 case INUM:
-								fprintf(stderr, "[INUM:%d]", t->attribute.ival);
-								break;
-					 case RNUM:
-								fprintf(stderr, "[RNUM:%f]", t->attribute.rval);
-								break;
-					 case ADDOP:
-								fprintf(stderr, "[ADDOP:%d]", t->attribute.opval);
-								break;
-					 case MULOP:
-								fprintf(stderr, "[MULOP:%d]", t->attribute.opval);
-								break;
-					 case RELOP:
-								fprintf(stderr, "[RELOP:%d]", t->attribute.opval);
-								break;
-					 case ARRAY_ACCESS:
-								fprintf(stderr, "[ARRAY_ACCESS:%d]", t->attribute.opval);
-								break;
-
-					 default:
-								fprintf(stderr, "[UNKNOWN]");
-								break;
+			 case ID:
+				fprintf(stderr, "[ID:%s]", (t->attribute.sval)->name);
+				break;
+			 case INUM:
+				fprintf(stderr, "[INUM:%d]", t->attribute.ival);
+				break;
+			 case RNUM:
+				fprintf(stderr, "[RNUM:%f]", t->attribute.rval);
+				break;
+			 case ADDOP:
+				fprintf(stderr, "[ADDOP:%d]", t->attribute.opval);
+				break;
+			 case MULOP:
+				fprintf(stderr, "[MULOP:%d]", t->attribute.opval);
+				break;
+			 case RELOP:
+				fprintf(stderr, "[RELOP:%d]", t->attribute.opval);
+				break;
+			 case ARRAY_ACCESS:
+				fprintf(stderr, "[ARRAY_ACCESS:%d]", t->attribute.opval);
+				break;
+			 default:
+				fprintf(stderr, "[UNKNOWN]");
+				break;
 		  }
 		  fprintf(stderr, "\n");
 

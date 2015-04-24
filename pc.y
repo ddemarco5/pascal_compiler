@@ -63,6 +63,10 @@ extern namelist_t *nametmp;
 %type <tval> factor
 %type <tval> array_variable
 %type <tval> variable
+/*We set standard_type as an ival to transfer INTEGER and REAL information*/
+%type <ival> standard_type
+/*This is set as a string so we can return the ID in subprogram_head*/
+%type <sval> subprogram_head
 
 %%
 
@@ -107,8 +111,16 @@ type
 	;
 
 standard_type
-	: INTEGER {typify_namelist(top_scope, nametmp, INTEGER);}
-	| REAL {typify_namelist(top_scope, nametmp, REAL);}
+	: INTEGER 
+	{
+		$$ = INTEGER;
+		typify_namelist(top_scope, nametmp, INTEGER);
+	}
+	| REAL 
+	{
+		$$ = REAL;
+		typify_namelist(top_scope, nametmp, REAL);
+	}
 	;
 
 subprogram_declarations
@@ -118,12 +130,16 @@ subprogram_declarations
 
 subprogram_declaration
 	: subprogram_head declarations subprogram_declarations compound_statement
-		{ top_scope = scope_pop(top_scope); }
+		{ 
+            top_scope = scope_pop(top_scope);
+            tmp = scope_search(top_scope, $1);
+            fprintf(stderr, "ASDASDASD: %s.\n", tmp->name);
+        }
 	;
 
 subprogram_head
 	: FUNCTION ID 
-		{ 
+		{
 			scope_insert(top_scope, $2);
 			nametmp = create_namelist();
 			insert_name(nametmp, $2);
@@ -133,23 +149,33 @@ subprogram_head
 			top_scope = scope_push(top_scope);
 		}
 		arguments ':' standard_type ';'
+		{
+            $$ = $2;
+			if(($6 != INTEGER) && ($6 != REAL)){
+				fprintf(stderr, "Function return type not INTEGER or REAL.");
+				exit(1);
+			}
+			tmp = scope_search_all(top_scope, $2);
+			tmp->rtype = $6;
+		}
 	| PROCEDURE ID 
 		{ 
 			scope_insert(top_scope, $2);
 			nametmp = create_namelist();
 			insert_name(nametmp, $2);
-			typify_namelist(top_scope, nametmp, FUNCTION);
+			typify_namelist(top_scope, nametmp, PROCEDURE);
 			print_names(nametmp);
 			flush_namelist(nametmp);
 			top_scope = scope_push(top_scope);
 		}
-		arguments ';'
+		arguments ';' { $$ = $2; }
 	| PROCEDURE ID ';'
 		{ 
+            $$ = $2;
 			scope_insert(top_scope, $2);
 			nametmp = create_namelist();
 			insert_name(nametmp, $2);
-			typify_namelist(top_scope, nametmp, FUNCTION);
+			typify_namelist(top_scope, nametmp, PROCEDURE);
 			print_names(nametmp);
 			flush_namelist(nametmp);
 			top_scope = scope_push(top_scope);
@@ -302,14 +328,20 @@ simple_expression
 	: term
 		{ $$ = $1; }
 	| simple_expression ADDOP term
-		{ $$ = make_op(ADDOP, $2, $1, $3); }
+		{ 
+            //$$ = make_op(ADDOP, $2, $1, $3); 
+            $$ = make_op($3->type, $2, $1, $3); 
+        }
 	;
 
 term
 	: factor
 		{ $$ = $1; }
 	| term MULOP factor
-		{ $$ = make_op(MULOP, $2, $1, $3); }
+		{ 
+            //$$ = make_op(MULOP, $2, $1, $3); 
+            $$ = make_op($3->type, $2, $1, $3); 
+        }
 	;
 
 factor
@@ -329,11 +361,11 @@ factor
 				exit(1);
 			}
 
-fprintf(stderr, "\n\nPRINTING ARRAY_ACCESS TREE:\n");
+	fprintf(stderr, "\n\nPRINTING ARRAY_ACCESS TREE:\n");
 			print_tree($3,0); 
 			fprintf(stderr, "\n\n");
 
-$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
+	$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
 		}
 	| ID '(' expression_list ')'
 		{ 
