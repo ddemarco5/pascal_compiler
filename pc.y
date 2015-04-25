@@ -415,11 +415,11 @@ procedure_statement
 	: ID
 	| ID 
 	{
-		push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
+		funcstacktmp = push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} '(' expression_list ')'
 	{
-		pop_funcstack(funcstacktmp);
+		funcstacktmp = pop_funcstack(funcstacktmp);
 		print_funcstack(funcstacktmp);
 	}
 	;
@@ -484,7 +484,7 @@ factor
 		}
 	| ID 
 	{
-		push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
+		funcstacktmp = push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} 
 	'(' expression_list ')'
@@ -495,7 +495,7 @@ factor
 			}
 			$$ = make_tree(tmp->type, make_id(tmp), $4); 
 	    		
-			pop_funcstack(funcstacktmp);
+			funcstacktmp = pop_funcstack(funcstacktmp);
 			print_funcstack(funcstacktmp);
 		}
 	| INUM

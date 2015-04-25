@@ -32,6 +32,7 @@ void build_arglist(funcstack_t *func, node_t *node){
 		push_arglist(func, node->args[i], 0);
 	}
 }
+
 funcstack_t *init_funcstack(){
 	funcstack_t *s = (funcstack_t *)malloc(sizeof(funcstack_t));
 	s->name = NULL;
@@ -54,21 +55,20 @@ funcstack_t *push_funcstack(funcstack_t *stack, node_t *node){
 	//The if statement handles if it is an empty first element.
 	if(stack->name == NULL) memcpy(stack, new, sizeof(funcstack_t));
 	else{
-		while(x->prev != NULL) x = x->prev;
-		x->prev = new;
+		new->prev = stack;
 	}
 	return new;
 }
 
 funcstack_t *pop_funcstack(funcstack_t *stack){
-	funcstack_t *x = stack;
-	funcstack_t *newtop;
-	while(x->prev != NULL){
-		newtop = x;
-		x = x->prev;
-	}
-	newtop->prev = NULL;
+	funcstack_t *x = stack->prev;
+	stack->prev = NULL;
+	free(stack);
 	return x;
+}
+
+funcstack_t *top_funcstack(funcstack_t *stack){
+	funcstack_t *tmp = stack;
 }
 
 void print_arglist(funcstack_t *stack){
@@ -83,6 +83,7 @@ void print_arglist(funcstack_t *stack){
 }
 
 void print_funcstack(funcstack_t *stack){
+	if(stack == NULL) return;
 	funcstack_t *x = stack;
 	fprintf(stderr, "\n\nFUNCSTACK:");
 	fprintf(stderr, "%s->", x->name);
