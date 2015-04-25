@@ -175,11 +175,6 @@ subprogram_head
 		arguments ';' 
         { 
             $$ = $2;
-            tmp = scope_search_all(top_scope, $2);
-            if(tmp->returned == 1){
-                fprintf(stderr, "Attempted return of procedure.\n");
-                exit(1);
-            }
         }
 	| PROCEDURE ID ';'
 		{ 
@@ -229,11 +224,50 @@ statement
 			/*fprintf(stderr, "\n\nPRINTING TREE\n");
 			print_tree($3,0);
 			fprintf(stderr, "\n\n");*/
+            // Begin left/right side type checking
+            int x,y;  //x will be the left side check, y will be the right.
+            if($3->type == FUNCTION){
+                y = $3->left->attribute.sval->rtype;
+            }
+            else{
+                    y = get_branch_type($3);
+                    if(y == RNUM) y = REAL;
+                    if(y == INUM) y = INTEGER;
+                }
+
+        
+            //fprintf(stderr, "HAY BETCH: %d.\n", get_branch_type($3));
+            //check if left side if function and use rtype
+                fprintf(stderr, "TEEEEEEEEEEEEEST!\n");
             if($1->attribute.sval != NULL){
-                if(($1->attribute.sval->type == FUNCTION) || ($1->attribute.sval->type == PROCEDURE))
+                if($1->attribute.sval->type == FUNCTION){
+                    x = $1->attribute.sval->rtype;
+                }
+                else{
+                    x = $1->attribute.sval->type;
+                }
+            }
+
+            if(x != y){
+                fprintf(stderr, "Invalid type assignment attempted (%d, %d).\n", x, y);
+                exit(1);
+            }
+            // End left/right side type checking
+
+            if($1->attribute.sval != NULL){
+                if($1->attribute.sval->type == FUNCTION)
                     $1->attribute.sval->returned = 1;
             }
             
+            if(($1->attribute.sval != NULL) && ($1->attribute.sval->type == PROCEDURE)){
+                tmp = scope_search(top_scope, $1->attribute.sval->name);
+                if(tmp == NULL){
+                    fprintf(stderr,"Procedure attempted to return.\n");
+                    exit(1);
+                }
+
+            }
+
             if(($1->attribute.sval != NULL) && ($1->attribute.sval->type != FUNCTION)){
                 tmp = scope_search(top_scope, $1->attribute.sval->name);
                 if(tmp == NULL){
@@ -241,15 +275,11 @@ statement
                     exit(1);
                 }
             }
-            if(($1->attribute.sval != NULL) && ($1->attribute.sval->type != PROCEDURE)){
-                tmp = scope_search(top_scope, $1->attribute.sval->name);
-                if(tmp == NULL){
-                    fprintf(stderr,"[P] Attempt to modify variable out of scope.\n");
-                    exit(1);
-                }
-
+            if($3->type == PROCEDURE){
+                fprintf(stderr, "Procedures cannot return values.\n");
+                exit(1);
             }
-		}
+        }
 	| procedure_statement
 	| compound_statement
 	| IF expression THEN statement %prec NO_ELSE
@@ -403,7 +433,7 @@ factor
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
 			}
-			$$ = make_tree(FUNCTION_CALL, make_id(tmp), $3); 
+			$$ = make_tree(tmp->type, make_id(tmp), $3); 
 		}
 	| INUM
 		{ $$ = make_inum($1); }

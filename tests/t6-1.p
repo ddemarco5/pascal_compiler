@@ -3,7 +3,7 @@ program main( input, output );
   var a: integer;
   procedure boo(b: integer);
   begin
-    a := 1
+    b := 1
   end;
 begin
   a := boo(a)

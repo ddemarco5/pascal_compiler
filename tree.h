@@ -15,6 +15,7 @@ typedef struct tree_s {
 tree_t;
 
 /* constructor */
+int get_branch_type(tree_t *branch);
 tree_t *make_tree(int type, tree_t *left, tree_t *right);
 tree_t *make_op(int type, int attribute, tree_t *left, tree_t *right);
 tree_t *make_id(node_t *node);

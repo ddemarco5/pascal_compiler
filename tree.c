@@ -28,9 +28,9 @@ int get_branch_type(tree_t *branch){
 			if(branch->right != NULL)
 				return get_branch_type(branch->right);
 			break;
-		default:
+		/*default:
 			fprintf(stderr, "ERROR FINDING TYPE (%d)\n", branch->type);
-			exit(1);
+			exit(1);*/
 	}
 }
 
