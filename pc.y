@@ -429,9 +429,26 @@ procedure_statement
 
 expression_list
 	: expression
-		{ $$ = $1;}
+	{ 
+		$$ = $1;
+
+		int y = get_branch_type($1);
+		if( y == INUM) y = INTEGER;
+		if( y == RNUM) y = REAL;
+		if( y == FUNCTION) y = $1->left->attribute.sval->rtype;
+		int x = check_args(funcstacktmp, y);
+	}
 	| expression_list ',' expression
-		{ $$ = make_tree(COMMA, $1, $3);}
+	{ 
+		$$ = make_tree(COMMA, $1, $3);
+
+		int y = get_branch_type($3);
+		if( y == INUM) y = INTEGER;
+		if( y == RNUM) y = REAL;
+		if( y == FUNCTION) y = $3->left->attribute.sval->rtype;
+		int x = check_args(funcstacktmp, y);
+
+	}
 	;
 
 expression

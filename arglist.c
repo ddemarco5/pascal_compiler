@@ -3,6 +3,34 @@
 #include <string.h>
 #include "arglist.h"
 
+//return 0 for success, 1 for failure
+int check_args(funcstack_t *stack, int type){
+	int args_tested = 1;
+	arglist_t *arglist = stack->arglist;
+	// Go to the closest unfound item.
+	while((arglist->found == 1) && (arglist->next != NULL)){
+		fprintf(stderr, "Skipping %d...\n", arglist->type);
+		arglist = arglist->next;
+		args_tested++;
+	}
+	fprintf(stderr, "ARGS TESTED: %d.\n", args_tested);
+	// Check to see if the types match.
+	fprintf(stderr, "DEBUG ARG TYPES: %d, %d.\n", arglist->type, type);
+	if(arglist->type == type){
+		arglist->found = 1;
+		fprintf(stderr, "ARGUMENT SATISFIED, SETTING!\n");
+		return 0;
+	}
+	if(arglist->type != type){
+		fprintf(stderr, "ARGUMENT TESTING FAILED\n");
+		return 1;
+	}
+	else{
+		fprintf(stderr, "SOME WEIRD SHIT HAPPENED...\n");
+		return -1;
+	}
+}
+
 arglist_t *init_arglist(int type, int found){
 	arglist_t *tmp = (arglist_t *)malloc(sizeof(arglist_t));
 	tmp->type = type;
