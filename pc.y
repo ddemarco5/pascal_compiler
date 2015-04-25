@@ -220,12 +220,13 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		{ 	
-			/*fprintf(stderr, "\n\nPRINTING TREE\n");
+		{ 	/*
+			fprintf(stderr, "\n\nPRINTING TREE\n");
 			print_tree($3,0);
 			fprintf(stderr, "\n\n");*/
             // Begin left/right side type checking
             int x,y;  //x will be the left side check, y will be the right.
+            x = y = -1;
             if($3->type == FUNCTION){
                 y = $3->left->attribute.sval->rtype;
             }
@@ -237,8 +238,9 @@ statement
 
         
             //fprintf(stderr, "HAY BETCH: %d.\n", get_branch_type($3));
+            
             //check if left side if function and use rtype
-                fprintf(stderr, "TEEEEEEEEEEEEEST!\n");
+                //fprintf(stderr, "TEEEEEEEEEEEEEST!\n");
             if($1->attribute.sval != NULL){
                 if($1->attribute.sval->type == FUNCTION){
                     x = $1->attribute.sval->rtype;
@@ -247,7 +249,10 @@ statement
                     x = $1->attribute.sval->type;
                 }
             }
-
+            else fprintf(stderr, "SOME JANKY SHIT IS GOIN ON WITH THAT LEFT SIDE.\n");
+            
+            fprintf(stderr, "CHECKING %d AGAINST %d\n", x, y);
+            
             if(x != y){
                 fprintf(stderr, "Invalid type assignment attempted (%d, %d).\n", x, y);
                 exit(1);
@@ -258,7 +263,8 @@ statement
                 if($1->attribute.sval->type == FUNCTION)
                     $1->attribute.sval->returned = 1;
             }
-            
+           
+
             if(($1->attribute.sval != NULL) && ($1->attribute.sval->type == PROCEDURE)){
                 tmp = scope_search(top_scope, $1->attribute.sval->name);
                 if(tmp == NULL){

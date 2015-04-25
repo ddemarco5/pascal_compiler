@@ -115,6 +115,9 @@ void print_tree(tree_t *t, int spaces)
 			 case ARRAY_ACCESS:
 				fprintf(stderr, "[ARRAY_ACCESS:%d]", t->attribute.opval);
 				break;
+			 case FUNCTION:
+				fprintf(stderr, "[FUNCTION:%d]", t->attribute.opval);
+				break;
 			 default:
 				fprintf(stderr, "[UNKNOWN]");
 				break;

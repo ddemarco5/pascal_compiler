@@ -1,6 +1,8 @@
 program Hello(input, output);
 var x,y,z : integer;
 var H : integer;
+var q : array[1 .. 2] of real;
+var m : real;
 
 procedure boo;
 begin
@@ -22,6 +24,7 @@ end;
 begin
   H := foo(1);
   x := (5+1)*3;
-  x[1+1] := x[2+x]
+  //x[1+1] := x[2+x]
+  m[4] := 2
   //for x := 0 to 10 do x := x + 1
 end.
