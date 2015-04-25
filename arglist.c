@@ -16,16 +16,29 @@ void print_funcstack(funcstack_t *stack){
 	print_funcstack(stack->prev);
 }
 
+void check_few_args(funcstack_t *stack){
+	arglist_t *list = stack->arglist;
+	while((list->found == 1)){
+		list = list->next;
+		if(list == NULL) break;
+	}
+	if(list != NULL){
+		fprintf(stderr, "Too few arguments provided.\n");
+		exit(1);
+	}
+}
 
-//return 0 for success, 1 for failure
-int check_args(funcstack_t *stack, int type){
+void check_args(funcstack_t *stack, int type){
 	int args_tested = 1;
 	arglist_t *arglist = stack->arglist;
 
 	// Go to the closest unfound item.
 	while(arglist->found == 1){
 		fprintf(stderr, "Skipping %d...\n", arglist->type);
-		if(arglist->next == NULL) break;
+		if(arglist->next == NULL){
+			fprintf(stderr, "Too many arguments provided in function/procedure.\n");
+			exit(1);
+		}
 		arglist = arglist->next;
 		args_tested++;
 	}
@@ -37,15 +50,15 @@ int check_args(funcstack_t *stack, int type){
 	if(arglist->type == type){
 		fprintf(stderr, "ARGUMENT SATISFIED, SETTING!\n");
 		arglist->found = 1;
-		return 0;
+		return;
 	}
 	if(arglist->type != type){
-		fprintf(stderr, "ARGUMENT TESTING FAILED\n");
-		return 1;
+		fprintf(stderr, "Invalide argument in function/procedure.\n");
+		exit(1);
 	}
 	else{
 		fprintf(stderr, "SOME WEIRD SHIT HAPPENED...\n");
-		return -1;
+		exit(1);
 	}
 }
 

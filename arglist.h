@@ -21,7 +21,8 @@ typedef struct funcstack_s
 }
 funcstack_t;
 
-int check_args(funcstack_t *stack, int type);
+void check_few_args(funcstack_t *stack);
+void check_args(funcstack_t *stack, int type);
 funcstack_t *init_funcstack();
 funcstack_t *write_funcstack(funcstack_t *f, node_t *node);
 funcstack_t *push_funcstack(funcstack_t *stack, node_t *node);

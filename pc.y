@@ -420,6 +420,7 @@ procedure_statement
 		print_funcstack(funcstacktmp);
 	} '(' expression_list ')'
 	{
+		check_few_args(funcstacktmp);
 		fprintf(stderr, "POP FUNCSTACK.\n");
 		funcstacktmp = pop_funcstack(funcstacktmp);
 		print_funcstack(funcstacktmp);
@@ -438,7 +439,7 @@ expression_list
 		if( y == INUM) y = INTEGER;
 		if( y == RNUM) y = REAL;
 		if( y == FUNCTION) y = $1->left->attribute.sval->rtype;
-		int x = check_args(funcstacktmp, y);
+		check_args(funcstacktmp, y);
 	}
 	| expression_list ',' expression
 	{ 
@@ -448,7 +449,7 @@ expression_list
 		if( y == INUM) y = INTEGER;
 		if( y == RNUM) y = REAL;
 		if( y == FUNCTION) y = $3->left->attribute.sval->rtype;
-		int x = check_args(funcstacktmp, y);
+		check_args(funcstacktmp, y);
 
 	}
 	;
@@ -514,7 +515,8 @@ factor
 				exit(1);
 			}
 			$$ = make_tree(tmp->type, make_id(tmp), $4); 
-	    		
+	    	
+			check_few_args(funcstacktmp);
 			fprintf(stderr, "POP FUNCSTACK.\n");
 			funcstacktmp = pop_funcstack(funcstacktmp);
 			print_funcstack(funcstacktmp);
