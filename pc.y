@@ -108,6 +108,13 @@ declarations
 type
 	: standard_type
 	| ARRAY '[' INUM DOTDOT INUM ']' OF standard_type
+    {
+     //fprintf(stderr, "HALLOOOO: %s\n", nametmp->name);
+     tmp = scope_search_all(top_scope, nametmp->name);
+     tmp->astart = $3;
+     tmp->aend = $5;
+     tmp->rtype = $8;
+    }
 	;
 
 standard_type
@@ -227,7 +234,7 @@ statement
             // Begin left/right side type checking
             int x,y;  //x will be the left side check, y will be the right.
             x = y = -1;
-            if($3->type == FUNCTION){
+            if(($3->type == FUNCTION) || ($3->type == ARRAY_ACCESS)){
                 y = $3->left->attribute.sval->rtype;
             }
             else{
@@ -241,15 +248,21 @@ statement
             
             //check if left side if function and use rtype
                 //fprintf(stderr, "TEEEEEEEEEEEEEST!\n");
+            if($1->type == ARRAY_ACCESS){
+                x = $1->left->attribute.sval->rtype;
+            }
             if($1->attribute.sval != NULL){
                 if($1->attribute.sval->type == FUNCTION){
                     x = $1->attribute.sval->rtype;
                 }
+                else if($1->type == ARRAY_ACCESS){
+                    x = $1->attribute.sval->rtype;
+                }
+
                 else{
                     x = $1->attribute.sval->type;
                 }
             }
-            else fprintf(stderr, "SOME JANKY SHIT IS GOIN ON WITH THAT LEFT SIDE.\n");
             
             fprintf(stderr, "CHECKING %d AGAINST %d\n", x, y);
             
