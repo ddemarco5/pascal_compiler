@@ -1,6 +1,8 @@
 #ifndef ARGS_H
 #define ARGS_H
 
+#include "node.h"
+
 typedef struct arglist_s
 {
 	int type;

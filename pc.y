@@ -111,14 +111,24 @@ declarations
 
 type
 	: standard_type
+	{
+		if(tmp != NULL){
+		if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
+			add_arg(tmp, $1);
+		}
+	}
 	| ARRAY '[' INUM DOTDOT INUM ']' OF standard_type
-    {
-     //fprintf(stderr, "HALLOOOO: %s\n", nametmp->name);
-     tmp = scope_search_all(top_scope, nametmp->name);
-     tmp->astart = $3;
-     tmp->aend = $5;
-     tmp->rtype = $8;
-    }
+    	{
+     		//fprintf(stderr, "HALLOOOO: %s\n", nametmp->name);
+		if(tmp != NULL){
+	     	if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
+	     		add_arg(tmp, $8);
+		}
+	     	tmp = scope_search_all(top_scope, nametmp->name);
+	     	tmp->astart = $3;
+	     	tmp->aend = $5;
+	     	tmp->rtype = $8;
+    	}
 	;
 
 standard_type
@@ -161,6 +171,9 @@ subprogram_head
 			typify_namelist(top_scope, nametmp, FUNCTION);
 			print_names(nametmp);
 			flush_namelist(nametmp);
+			// This will get our node for argument adding down in param list
+			tmp = scope_search(top_scope, $2);
+
 			top_scope = scope_push(top_scope);
 		}
 		arguments ':' standard_type ';'
@@ -181,6 +194,9 @@ subprogram_head
 			typify_namelist(top_scope, nametmp, PROCEDURE);
 			print_names(nametmp);
 			flush_namelist(nametmp);
+			// This will get our node for argument adding down in param list
+			tmp = scope_search(top_scope, $2);
+
 			top_scope = scope_push(top_scope);
 		}
 		arguments ';' 
@@ -189,7 +205,7 @@ subprogram_head
         }
 	| PROCEDURE ID ';'
 		{ 
-            $$ = $2;
+            		$$ = $2;
 			scope_insert(top_scope, $2);
 			nametmp = create_namelist();
 			insert_name(nametmp, $2);
@@ -207,9 +223,13 @@ arguments
 parameter_list
 	: {nametmp = create_namelist();}
 	identifier_list ':' type
-	 {print_names(nametmp); flush_namelist(nametmp);}
+	{
+		print_names(nametmp); flush_namelist(nametmp);
+	}
 	| parameter_list ';'{nametmp = create_namelist();} identifier_list ':' type
-	{print_names(nametmp); flush_namelist(nametmp);}
+	{
+		print_names(nametmp); flush_namelist(nametmp);
+	}
 	;
 
 

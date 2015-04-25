@@ -7,6 +7,8 @@
 /* instantiate stack of names */
 namelist_t *create_namelist(){
 	namelist_t *n = (namelist_t*)malloc(sizeof(namelist_t));
+	n->name = NULL;
+	n->next = NULL;
 	return n;
 }
 

@@ -10,7 +10,7 @@ begin
 end;
 *)
 
-function foo(a: integer): integer;
+function foo(a: integer; b: real): integer;
 begin
 (*  H := H + 0;
   if x = 0 then x := 1
