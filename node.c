@@ -6,7 +6,8 @@
 node_t *make_node(char *name)
 {
 	node_t *p = (node_t *)malloc(sizeof(node_t));
-	p->args = NULL;
+	p->args = (int *)malloc(sizeof(int));
+	p->args[0] = -1;
 	p->numargs = 0;
 	p->name = strdup(name);
 	p->returned = 0;
@@ -36,12 +37,22 @@ node_t *node_insert(node_t *head, char *name)
 
 
 void add_arg(node_t *node, int type){
-	int newsize = node->numargs + 1;
+	/*int newsize = node->numargs + 1;
 	int *oldarray = node->args;
 	int *newarray = (int *)malloc(sizeof(int)*newsize);
 	if(node->args != NULL) memcpy(newarray, oldarray, sizeof(int)*(node->numargs));
 	node->numargs = node->numargs + 1;
 	newarray[node->numargs] = type;
 	node->args = newarray;
-	free(oldarray);	
+	free(oldarray);	*/
+	int *oldargs = node->args;
+
+	if(node->args[0] == -1) node->args[0] = type;
+	node->numargs++;
+	int *new_array = (int *)malloc(sizeof(int)*(node->numargs));
+	memcpy(new_array, node->args, sizeof(int)*node->numargs);
+	new_array[node->numargs-1] = type;
+	node->args = new_array;
+
+	free(oldargs); //to be memory safe
 }

@@ -115,14 +115,15 @@ type
 		if(tmp != NULL){
 		if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
 			add_arg(tmp, $1);
+     			fprintf(stderr, "HALLOOOO1: %d\n", tmp->args[0]);
 		}
 	}
 	| ARRAY '[' INUM DOTDOT INUM ']' OF standard_type
     	{
-     		//fprintf(stderr, "HALLOOOO: %s\n", nametmp->name);
 		if(tmp != NULL){
 	     	if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
 	     		add_arg(tmp, $8);
+     			fprintf(stderr, "HALLOOOO2: %d\n", tmp->args[0]);
 		}
 	     	tmp = scope_search_all(top_scope, nametmp->name);
 	     	tmp->astart = $3;
@@ -414,7 +415,7 @@ procedure_statement
 	: ID
 	| ID 
 	{
-		push_funcstack(funcstacktmp, $1);
+		push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} '(' expression_list ')'
 	{
@@ -483,7 +484,7 @@ factor
 		}
 	| ID 
 	{
-		push_funcstack(funcstacktmp, $1);
+		push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} 
 	'(' expression_list ')'

@@ -2,6 +2,7 @@
 #define ARGS_H
 
 #include "node.h"
+#include "scope.h"
 
 typedef struct arglist_s
 {
@@ -15,13 +16,14 @@ arglist_t;
 typedef struct funcstack_s
 {
 	char* name;
+	arglist_t *arglist;
 	struct funcstack_s *prev;
 }
 funcstack_t;
 
 funcstack_t *init_funcstack();
-funcstack_t *write_funcstack(funcstack_t *f, char *name);
-funcstack_t *push_funcstack(funcstack_t *stack, char *name);
+funcstack_t *write_funcstack(funcstack_t *f, node_t *node);
+funcstack_t *push_funcstack(funcstack_t *stack, node_t *node);
 funcstack_t *pop_funcstack(funcstack_t *stack);
 void print_funcstack(funcstack_t *stack);
 #endif

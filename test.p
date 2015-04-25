@@ -20,10 +20,15 @@ begin
   foo := 1
 end;
 
+function boo(c:real): integer;
+begin
+  boo := 1
+end;
+
 
 begin
   //H := foo(foo(foo(1)));
-  foo(foo(foo(foo(foo(1)))))
+  boo(foo(foo(foo(boo(1)))))
   (*x := (5+1)*3
   x[1+1] := x[2+x]
   q[1] := 1;
