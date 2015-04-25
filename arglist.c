@@ -3,22 +3,40 @@
 #include <string.h>
 #include "arglist.h"
 
+void print_arglist(arglist_t *arglist){
+	if(arglist == NULL) return;
+	fprintf(stderr, "(t:%d,f:%d)", arglist->type, arglist->found);
+	print_arglist(arglist->next);
+}
+
+void print_funcstack(funcstack_t *stack){
+	if(stack == NULL){ fprintf(stderr, "\n\n"); return; }
+	fprintf(stderr, "%s->", stack->name);
+	print_arglist(stack->arglist);
+	print_funcstack(stack->prev);
+}
+
+
 //return 0 for success, 1 for failure
 int check_args(funcstack_t *stack, int type){
 	int args_tested = 1;
 	arglist_t *arglist = stack->arglist;
+
 	// Go to the closest unfound item.
-	while((arglist->found == 1) && (arglist->next != NULL)){
+	while(arglist->found == 1){
 		fprintf(stderr, "Skipping %d...\n", arglist->type);
+		if(arglist->next == NULL) break;
 		arglist = arglist->next;
 		args_tested++;
 	}
 	fprintf(stderr, "ARGS TESTED: %d.\n", args_tested);
 	// Check to see if the types match.
 	fprintf(stderr, "DEBUG ARG TYPES: %d, %d.\n", arglist->type, type);
+	
+		
 	if(arglist->type == type){
-		arglist->found = 1;
 		fprintf(stderr, "ARGUMENT SATISFIED, SETTING!\n");
+		arglist->found = 1;
 		return 0;
 	}
 	if(arglist->type != type){
@@ -45,7 +63,10 @@ void push_arglist(funcstack_t *func, int type, int found){
 	tmp->found = found;
 	arglist_t *x = func->arglist;
 	arglist_t *previtem = NULL;
-	if(func->arglist->type == -1) memcpy(x, tmp, sizeof(arglist_t));
+	if(func->arglist == NULL){
+		func->arglist = tmp;
+		return;
+	}
 	while(x != NULL){
 		previtem = x;
 		x = x->next;
@@ -65,8 +86,8 @@ funcstack_t *init_funcstack(){
 	funcstack_t *s = (funcstack_t *)malloc(sizeof(funcstack_t));
 	s->name = NULL;
 	s->prev = NULL;
-	//s->arglist = NULL;
-	s->arglist = init_arglist(-1, -1);
+	s->arglist = NULL;
+	//s->arglist = init_arglist(-1, -1);
 	return s;
 }
 
@@ -97,32 +118,6 @@ funcstack_t *pop_funcstack(funcstack_t *stack){
 
 funcstack_t *top_funcstack(funcstack_t *stack){
 	funcstack_t *tmp = stack;
-}
-
-void print_arglist(funcstack_t *stack){
-	arglist_t *x = stack->arglist;
-	fprintf(stderr, "|a|");
-	if(x->next == NULL) fprintf(stderr, "(t:%d,f:%d)", x->type, x->found);
-	while(x->next != NULL){
-		x = x->next;
-		fprintf(stderr, "(t:%d,f:%d)", x->type, x->found);
-	}
-	if(x->next == NULL) fprintf(stderr, "|!a|");
-}
-
-void print_funcstack(funcstack_t *stack){
-	if(stack == NULL) return;
-	funcstack_t *x = stack;
-	fprintf(stderr, "\n\nFUNCSTACK:");
-	fprintf(stderr, "%s->", x->name);
-	print_arglist(x);
-	while(x->prev != NULL){
-		x = x->prev;
-		fprintf(stderr, "%s->", x->name);
-		print_arglist(x);
-	}
-	if(x == NULL) fprintf(stderr, "Done.");
-	fprintf(stderr, "\n\n");
 }
 
 

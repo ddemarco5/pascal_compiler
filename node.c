@@ -47,12 +47,16 @@ void add_arg(node_t *node, int type){
 	free(oldarray);	*/
 	int *oldargs = node->args;
 
-	if(node->args[0] == -1) node->args[0] = type;
 	node->numargs++;
-	int *new_array = (int *)malloc(sizeof(int)*(node->numargs));
-	memcpy(new_array, node->args, sizeof(int)*node->numargs);
-	new_array[node->numargs-1] = type;
-	node->args = new_array;
+	if(node->args[0] == -1){
+		node->args[0] = type;
+	}
+	else{
+		int *new_array = (int *)malloc(sizeof(int)*(node->numargs));
+		memcpy(new_array, node->args, sizeof(int)*node->numargs);
+		new_array[node->numargs-1] = type;
+		node->args = new_array;
 
-	free(oldargs); //to be memory safe
+		free(oldargs); //to be memory safe
+	}
 }
