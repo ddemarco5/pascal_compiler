@@ -29,8 +29,9 @@ int get_branch_type(tree_t *branch){
 				return get_branch_type(branch->right);
 			break;
 		default:
-			fprintf(stderr, "UNEXPECTED TYPE (%d)\n", branch->type);
-			exit(1);
+			fprintf(stderr, "OTHER TYPE (%d)\n", branch->type);
+			//exit(1);
+			return branch->type;
 	}
 }
 

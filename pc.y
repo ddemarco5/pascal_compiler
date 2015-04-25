@@ -5,11 +5,13 @@
 #include "node.h"
 #include "scope.h"
 #include "tree.h"
+#include "arglist.h"
 #include "y.tab.h"
 
 extern scope_t *top_scope;
 extern node_t *tmp;
 extern namelist_t *nametmp;
+extern funcstack_t *funcstacktmp;
 
 %}
 
@@ -23,6 +25,7 @@ extern namelist_t *nametmp;
 /* semantic + gencode */
 	tree_t *tval;
 }
+
 
 %token <ival>	INUM
 %token <rval>	RNUM
@@ -74,6 +77,7 @@ program:
 	{
 	 top_scope = scope_push(top_scope);
 	 nametmp = create_namelist();
+	 funcstacktmp = init_funcstack();
 	}
 	/* Right now we aren't putting a type for input and output in the symbol table */
 	PROGRAM ID '(' identifier_list ')' ';' 
@@ -140,7 +144,7 @@ subprogram_declaration
 		{ 
             top_scope = scope_pop(top_scope);
             tmp = scope_search(top_scope, $1);
-            fprintf(stderr, "ASDASDASD: %s.\n", tmp->name);
+            //fprintf(stderr, "ASDASDASD: %s.\n", tmp->name);
             if((tmp->type == FUNCTION) && (tmp->returned != 1)){
                 fprintf(stderr, "Function is never returned.\n");
                 exit(1);
@@ -150,7 +154,7 @@ subprogram_declaration
 
 subprogram_head
 	: FUNCTION ID 
-		{
+		{	
 			scope_insert(top_scope, $2);
 			nametmp = create_namelist();
 			insert_name(nametmp, $2);
@@ -161,7 +165,7 @@ subprogram_head
 		}
 		arguments ':' standard_type ';'
 		{
-            $$ = $2;
+            		$$ = $2;
 			if(($6 != INTEGER) && ($6 != REAL)){
 				fprintf(stderr, "Function return type not INTEGER or REAL.");
 				exit(1);
@@ -263,9 +267,11 @@ statement
                     x = $1->attribute.sval->type;
                 }
             }
-            
+            // Our main checks 
             fprintf(stderr, "CHECKING %d AGAINST %d\n", x, y);
-            
+            if(y == PROCEDURE){
+                fprintf(stderr, "Procedures do not return values.\n");
+            }
             if(x != y){
                 fprintf(stderr, "Invalid type assignment attempted (%d, %d).\n", x, y);
                 exit(1);
@@ -298,6 +304,7 @@ statement
                 fprintf(stderr, "Procedures cannot return values.\n");
                 exit(1);
             }
+
         }
 	| procedure_statement
 	| compound_statement
@@ -385,7 +392,15 @@ array_variable
 
 procedure_statement
 	: ID
-	| ID '(' expression_list ')'
+	| ID 
+	{
+		push_funcstack(funcstacktmp, $1);
+		print_funcstack(funcstacktmp);
+	} '(' expression_list ')'
+	{
+		pop_funcstack(funcstacktmp);
+		print_funcstack(funcstacktmp);
+	}
 	;
 
 
@@ -446,13 +461,21 @@ factor
 
 	$$ = make_tree(ARRAY_ACCESS, make_id(tmp), $3); 
 		}
-	| ID '(' expression_list ')'
+	| ID 
+	{
+		push_funcstack(funcstacktmp, $1);
+		print_funcstack(funcstacktmp);
+	} 
+	'(' expression_list ')'
 		{ 
 			if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
 			}
-			$$ = make_tree(tmp->type, make_id(tmp), $3); 
+			$$ = make_tree(tmp->type, make_id(tmp), $4); 
+	    		
+			pop_funcstack(funcstacktmp);
+			print_funcstack(funcstacktmp);
 		}
 	| INUM
 		{ $$ = make_inum($1); }
@@ -469,11 +492,14 @@ factor
 scope_t *top_scope;
 node_t *tmp;
 namelist_t *nametmp;
+funcstack_t *funcstacktmp;
 
 main()
 {
 	top_scope = NULL;
 	tmp = NULL;
+	nametmp = NULL;
+	funcstacktmp = NULL;
 
 yyparse();
 
