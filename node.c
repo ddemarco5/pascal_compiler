@@ -7,6 +7,7 @@ node_t *make_node(char *name)
 {
 	node_t *p = (node_t *)malloc(sizeof(node_t));
 	p->name = strdup(name);
+	p->returned = 0;
 	return p;
 }
 

@@ -4,15 +4,18 @@ var H : integer;
 
 procedure boo;
 begin
+  boo := x
 end;
 
 
 function foo(a: integer): integer;
 begin
-  H := H + 0;
-  if x = 0 then x := 1
-  else x := 2;
-  while x = 1 do x := x + x
+  //H := H + 0;
+  //if x = 0 then x := 1
+  //else x := 2;
+  //while x = 1 do x := x + x;
+  a := H;
+  foo := H
 end;
 
 

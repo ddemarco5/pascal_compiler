@@ -20,6 +20,14 @@ int get_branch_type(tree_t *branch){
 		case RNUM:
 			return RNUM;
 			break;
+		case ADDOP:
+			if(branch->right != NULL)
+				return get_branch_type(branch->right);
+			break;
+		case MULOP:
+			if(branch->right != NULL)
+				return get_branch_type(branch->right);
+			break;
 		default:
 			fprintf(stderr, "ERROR FINDING TYPE (%d)\n", branch->type);
 			exit(1);
@@ -34,16 +42,15 @@ tree_t *make_tree(int type, tree_t *left, tree_t *right)
 
 		  p->type = type;
 		  p->left = left;
-		  p->right = right;
-
+		  p->right = right;	
 		  return p;
 }
 
 tree_t *make_op(int type, int attribute, tree_t *left, tree_t *right)
 {
 		  if(get_branch_type(left) != get_branch_type(right)){
-					 fprintf(stderr, "Type mismatch in tree.\n");
-					 exit(1);
+			fprintf(stderr, "Type mismatch in tree. %d vs. %d\n", get_branch_type(left), get_branch_type(right));
+			exit(1);
 		  }
 		  tree_t *p = make_tree(type, left, right);
 		  p->attribute.opval = attribute;

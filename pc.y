@@ -134,6 +134,10 @@ subprogram_declaration
             top_scope = scope_pop(top_scope);
             tmp = scope_search(top_scope, $1);
             fprintf(stderr, "ASDASDASD: %s.\n", tmp->name);
+            if((tmp->type == FUNCTION) && (tmp->returned != 1)){
+                fprintf(stderr, "Function is never returned.\n");
+                exit(1);
+            }
         }
 	;
 
@@ -168,7 +172,15 @@ subprogram_head
 			flush_namelist(nametmp);
 			top_scope = scope_push(top_scope);
 		}
-		arguments ';' { $$ = $2; }
+		arguments ';' 
+        { 
+            $$ = $2;
+            tmp = scope_search_all(top_scope, $2);
+            if(tmp->returned == 1){
+                fprintf(stderr, "Attempted return of procedure.\n");
+                exit(1);
+            }
+        }
 	| PROCEDURE ID ';'
 		{ 
             $$ = $2;
@@ -213,11 +225,31 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		/*{ 	
-			fprintf(stderr, "\n\nPRINTING TREE:\n");
-			print_tree($3,0); 
-			fprintf(stderr, "\n\n");
-		}*/
+		{ 	
+			/*fprintf(stderr, "\n\nPRINTING TREE\n");
+			print_tree($3,0);
+			fprintf(stderr, "\n\n");*/
+            if($1->attribute.sval != NULL){
+                if(($1->attribute.sval->type == FUNCTION) || ($1->attribute.sval->type == PROCEDURE))
+                    $1->attribute.sval->returned = 1;
+            }
+            
+            if(($1->attribute.sval != NULL) && ($1->attribute.sval->type != FUNCTION)){
+                tmp = scope_search(top_scope, $1->attribute.sval->name);
+                if(tmp == NULL){
+                    fprintf(stderr,"[F] Attempt to modify variable out of scope.\n");
+                    exit(1);
+                }
+            }
+            if(($1->attribute.sval != NULL) && ($1->attribute.sval->type != PROCEDURE)){
+                tmp = scope_search(top_scope, $1->attribute.sval->name);
+                if(tmp == NULL){
+                    fprintf(stderr,"[P] Attempt to modify variable out of scope.\n");
+                    exit(1);
+                }
+
+            }
+		}
 	| procedure_statement
 	| compound_statement
 	| IF expression THEN statement %prec NO_ELSE
@@ -329,8 +361,7 @@ simple_expression
 		{ $$ = $1; }
 	| simple_expression ADDOP term
 		{ 
-            //$$ = make_op(ADDOP, $2, $1, $3); 
-            $$ = make_op($3->type, $2, $1, $3); 
+            $$ = make_op(ADDOP, $2, $1, $3); 
         }
 	;
 
@@ -339,8 +370,7 @@ term
 		{ $$ = $1; }
 	| term MULOP factor
 		{ 
-            //$$ = make_op(MULOP, $2, $1, $3); 
-            $$ = make_op($3->type, $2, $1, $3); 
+            $$ = make_op(MULOP, $2, $1, $3); 
         }
 	;
 

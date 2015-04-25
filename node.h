@@ -7,6 +7,7 @@ typedef struct node_s
 	int type;	/* VAR, FUNCTION, PROCEDURE */
 	/* extra information */
 	int rtype;
+	int returned; //treated as bool
 	/* array bounds */
 	int astart;
 	int aend;
