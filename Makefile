@@ -1,5 +1,7 @@
-pasc: y.tab.o lex.yy.o tree.o scope.o node.o arglist.o
-	gcc -g -o pasc tree.o scope.o node.o arglist.o y.tab.o lex.yy.o -lfl
+pasc: y.tab.o lex.yy.o tree.o scope.o node.o arglist.o gencode.o
+	gcc -g -o pasc tree.o scope.o node.o arglist.o gencode.o y.tab.o lex.yy.o -lfl
+gencode.o: gencode.c
+	gcc -g -c gencode.c
 tree.o: tree.c
 	gcc -g -c tree.c
 scope.o: scope.c

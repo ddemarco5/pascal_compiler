@@ -6,12 +6,14 @@
 #include "scope.h"
 #include "tree.h"
 #include "arglist.h"
+#include "gencode.h"
 #include "y.tab.h"
 
 extern scope_t *top_scope;
 extern node_t *tmp;
 extern namelist_t *nametmp;
 extern funcstack_t *funcstacktmp;
+extern codelist_t *codelist;
 
 %}
 
@@ -80,6 +82,15 @@ program:
 	 top_scope = scope_push(top_scope);
 	 nametmp = create_namelist();
 	 funcstacktmp = init_funcstack();
+	 //gencode bit
+	 
+	 //need to init here. Can't in the gencode file for some reason.
+	 codelist = (codelist_t *)malloc(sizeof(codelist_t));
+	 codelist->next = NULL;
+	 codelist->type = -99;
+	 
+	 addhead(codelist);
+	 //printcodelist(codelist);
 	}
 	/* Right now we aren't putting a type for input and output in the symbol table */
 	PROGRAM ID '(' identifier_list ')' ';' 
@@ -550,6 +561,7 @@ scope_t *top_scope;
 node_t *tmp;
 namelist_t *nametmp;
 funcstack_t *funcstacktmp;
+codelist_t *codelist;
 
 main()
 {
@@ -557,8 +569,11 @@ main()
 	tmp = NULL;
 	nametmp = NULL;
 	funcstacktmp = NULL;
+	codelist = NULL;
 
 yyparse();
+
+gencode(codelist);
 
 }
 
