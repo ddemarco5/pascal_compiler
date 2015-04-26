@@ -52,7 +52,9 @@ extern funcstack_t *funcstacktmp;
 %token	IF THEN
 
 %token	WHILE DO
-%token  	FOR TO
+%token 	FOR TO
+
+%token READ WRITE
 
 %token	FUNCTION_CALL
 %token	ARRAY_ACCESS
@@ -115,7 +117,7 @@ type
 		if(tmp != NULL){
 		if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
 			add_arg(tmp, $1);
-     			fprintf(stderr, "HALLOOOO1: %d\n", tmp->args[0]);
+     			//fprintf(stderr, "HALLOOOO1: %d\n", tmp->args[0]);
 		}
 	}
 	| ARRAY '[' INUM DOTDOT INUM ']' OF standard_type
@@ -123,7 +125,7 @@ type
 		if(tmp != NULL){
 	     	if((tmp->type == FUNCTION) || (tmp->type == PROCEDURE))
 	     		add_arg(tmp, $8);
-     			fprintf(stderr, "HALLOOOO2: %d\n", tmp->args[0]);
+     			//fprintf(stderr, "HALLOOOO2: %d\n", tmp->args[0]);
 		}
 	     	tmp = scope_search_all(top_scope, nametmp->name);
 	     	tmp->astart = $3;
@@ -362,6 +364,8 @@ statement
 				exit(1);
 			}
 	  }
+	| READ '(' expression ')'
+	| WRITE '(' expression ')'
 	;
 
 variable

@@ -26,6 +26,10 @@ whitespace	[ \t]+
 "real"		{ echo("REAL"); return REAL; }
 "function"	{ echo("FUNCTION"); return FUNCTION; }
 "procedure"	{ echo("PROCEDURE"); return PROCEDURE; }
+
+"read"		{ echo("READ"); return READ; }
+"write"		{ echo("WRITE"); return WRITE; }
+
 "begin"		{ echo("BBEGIN"); return BBEGIN; }
 "end"		{ echo("END"); return END; }
 "if"		{ echo("IF"); return IF; }

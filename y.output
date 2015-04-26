@@ -80,62 +80,64 @@ Grammar
    35          | IF expression THEN statement ELSE statement
    36          | WHILE expression DO statement
    37          | FOR variable ASSIGNOP simple_expression TO simple_expression DO statement
+   38          | READ '(' expression ')'
+   39          | WRITE '(' expression ')'
 
-   38 variable: ID
-   39         | array_variable
+   40 variable: ID
+   41         | array_variable
 
-   40 array_variable: ID '[' expression ']'
+   42 array_variable: ID '[' expression ']'
 
-   41 procedure_statement: ID
+   43 procedure_statement: ID
 
-   42 $@8: %empty
+   44 $@8: %empty
 
-   43 procedure_statement: ID $@8 '(' expression_list ')'
+   45 procedure_statement: ID $@8 '(' expression_list ')'
 
-   44 expression_list: expression
-   45                | expression_list ',' expression
+   46 expression_list: expression
+   47                | expression_list ',' expression
 
-   46 expression: simple_expression
-   47           | simple_expression RELOP simple_expression
+   48 expression: simple_expression
+   49           | simple_expression RELOP simple_expression
 
-   48 simple_expression: term
-   49                  | simple_expression ADDOP term
+   50 simple_expression: term
+   51                  | simple_expression ADDOP term
 
-   50 term: factor
-   51     | term MULOP factor
+   52 term: factor
+   53     | term MULOP factor
 
-   52 factor: ID
-   53       | ID '[' expression ']'
+   54 factor: ID
+   55       | ID '[' expression ']'
 
-   54 $@9: %empty
+   56 $@9: %empty
 
-   55 factor: ID $@9 '(' expression_list ')'
-   56       | INUM
-   57       | RNUM
-   58       | '(' expression ')'
-   59       | NOT factor
+   57 factor: ID $@9 '(' expression_list ')'
+   58       | INUM
+   59       | RNUM
+   60       | '(' expression ')'
+   61       | NOT factor
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 3 21 43 55 58
-')' (41) 3 21 43 55 58
-',' (44) 5 45
+'(' (40) 3 21 38 39 45 57 60
+')' (41) 3 21 38 39 45 57 60
+',' (44) 5 47
 '.' (46) 3
 ':' (58) 7 17 23 25
 ';' (59) 3 7 13 17 19 20 25 30
-'[' (91) 10 40 53
-']' (93) 10 40 53
+'[' (91) 10 42 55
+']' (93) 10 42 55
 error (256)
-INUM (258) 10 56
-RNUM (259) 57
-ID (260) 3 4 5 17 19 20 38 40 41 43 52 53 55
+INUM (258) 10 58
+RNUM (259) 59
+ID (260) 3 4 5 17 19 20 40 42 43 45 54 55 57
 ASSIGNOP (261) 31 37
-RELOP (262) 47
-ADDOP (263) 49
-MULOP (264) 51
-NOT (265) 59
+RELOP (262) 49
+ADDOP (263) 51
+MULOP (264) 53
+NOT (265) 61
 LT (266)
 LE (267)
 GT (268)
@@ -167,77 +169,79 @@ WHILE (293) 36
 DO (294) 36 37
 FOR (295) 37
 TO (296) 37
-FUNCTION_CALL (297)
-ARRAY_ACCESS (298)
-COMMA (299)
+READ (297) 38
+WRITE (298) 39
+FUNCTION_CALL (299)
+ARRAY_ACCESS (300)
+COMMA (301)
 
 
 Nonterminals, with rules where they appear
 
-$accept (53)
+$accept (55)
     on left: 0
-program (54)
+program (56)
     on left: 3, on right: 0
-$@1 (55)
+$@1 (57)
     on left: 1, on right: 3
-$@2 (56)
+$@2 (58)
     on left: 2, on right: 3
-identifier_list (57)
+identifier_list (59)
     on left: 4 5, on right: 3 5 7 23 25
-declarations (58)
+declarations (60)
     on left: 7 8, on right: 3 7 15
-$@3 (59)
+$@3 (61)
     on left: 6, on right: 7
-type (60)
+type (62)
     on left: 9 10, on right: 7 23 25
-standard_type (61)
+standard_type (63)
     on left: 11 12, on right: 9 10 17
-subprogram_declarations (62)
+subprogram_declarations (64)
     on left: 13 14, on right: 3 13 15
-subprogram_declaration (63)
+subprogram_declaration (65)
     on left: 15, on right: 13
-subprogram_head (64)
+subprogram_head (66)
     on left: 17 19 20, on right: 15
-$@4 (65)
+$@4 (67)
     on left: 16, on right: 17
-$@5 (66)
+$@5 (68)
     on left: 18, on right: 19
-arguments (67)
+arguments (69)
     on left: 21, on right: 17 19
-parameter_list (68)
+parameter_list (70)
     on left: 23 25, on right: 21 25
-$@6 (69)
+$@6 (71)
     on left: 22, on right: 23
-$@7 (70)
+$@7 (72)
     on left: 24, on right: 25
-compound_statement (71)
+compound_statement (73)
     on left: 26, on right: 3 15 33
-optional_statements (72)
+optional_statements (74)
     on left: 27 28, on right: 26
-statement_list (73)
+statement_list (75)
     on left: 29 30, on right: 27 30
-statement (74)
-    on left: 31 32 33 34 35 36 37, on right: 29 30 34 35 36 37
-variable (75)
-    on left: 38 39, on right: 31 37
-array_variable (76)
-    on left: 40, on right: 39
-procedure_statement (77)
-    on left: 41 43, on right: 32
-$@8 (78)
-    on left: 42, on right: 43
-expression_list (79)
-    on left: 44 45, on right: 43 45 55
-expression (80)
-    on left: 46 47, on right: 31 34 35 36 40 44 45 53 58
-simple_expression (81)
-    on left: 48 49, on right: 37 46 47 49
-term (82)
-    on left: 50 51, on right: 48 49 51
-factor (83)
-    on left: 52 53 55 56 57 58 59, on right: 50 51 59
-$@9 (84)
-    on left: 54, on right: 55
+statement (76)
+    on left: 31 32 33 34 35 36 37 38 39, on right: 29 30 34 35 36 37
+variable (77)
+    on left: 40 41, on right: 31 37
+array_variable (78)
+    on left: 42, on right: 41
+procedure_statement (79)
+    on left: 43 45, on right: 32
+$@8 (80)
+    on left: 44, on right: 45
+expression_list (81)
+    on left: 46 47, on right: 45 47 57
+expression (82)
+    on left: 48 49, on right: 31 34 35 36 38 39 42 46 47 55 60
+simple_expression (83)
+    on left: 50 51, on right: 37 48 49 51
+term (84)
+    on left: 52 53, on right: 50 51 53
+factor (85)
+    on left: 54 55 57 58 59 60 61, on right: 52 53 61
+$@9 (86)
+    on left: 56, on right: 57
 
 
 State 0
@@ -417,23 +421,25 @@ State 20
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
     $default  reduce using rule 28 (optional_statements)
 
-    compound_statement   go to state 31
-    optional_statements  go to state 32
-    statement_list       go to state 33
-    statement            go to state 34
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
+    compound_statement   go to state 33
+    optional_statements  go to state 34
+    statement_list       go to state 35
+    statement            go to state 36
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
 State 21
 
    13 subprogram_declarations: subprogram_declarations subprogram_declaration . ';'
 
-    ';'  shift, and go to state 38
+    ';'  shift, and go to state 40
 
 
 State 22
@@ -442,14 +448,14 @@ State 22
 
     $default  reduce using rule 8 (declarations)
 
-    declarations  go to state 39
+    declarations  go to state 41
 
 
 State 23
 
     3 program: $@1 PROGRAM ID '(' identifier_list ')' ';' $@2 declarations subprogram_declarations compound_statement . '.'
 
-    '.'  shift, and go to state 40
+    '.'  shift, and go to state 42
 
 
 State 24
@@ -458,7 +464,7 @@ State 24
     7 declarations: declarations VAR $@3 identifier_list . ':' type ';'
 
     ','  shift, and go to state 10
-    ':'  shift, and go to state 41
+    ':'  shift, and go to state 43
 
 
 State 25
@@ -467,7 +473,7 @@ State 25
 
     $default  reduce using rule 16 ($@4)
 
-    $@4  go to state 42
+    $@4  go to state 44
 
 
 State 26
@@ -475,27 +481,27 @@ State 26
    19 subprogram_head: PROCEDURE ID . $@5 arguments ';'
    20                | PROCEDURE ID . ';'
 
-    ';'  shift, and go to state 43
+    ';'  shift, and go to state 45
 
     $default  reduce using rule 18 ($@5)
 
-    $@5  go to state 44
+    $@5  go to state 46
 
 
 State 27
 
-   38 variable: ID .
-   40 array_variable: ID . '[' expression ']'
-   41 procedure_statement: ID .
-   43                    | ID . $@8 '(' expression_list ')'
+   40 variable: ID .
+   42 array_variable: ID . '[' expression ']'
+   43 procedure_statement: ID .
+   45                    | ID . $@8 '(' expression_list ')'
 
-    '['  shift, and go to state 45
+    '['  shift, and go to state 47
 
-    ASSIGNOP  reduce using rule 38 (variable)
-    '('       reduce using rule 42 ($@8)
-    $default  reduce using rule 41 (procedure_statement)
+    ASSIGNOP  reduce using rule 40 (variable)
+    '('       reduce using rule 44 ($@8)
+    $default  reduce using rule 43 (procedure_statement)
 
-    $@8  go to state 46
+    $@8  go to state 48
 
 
 State 28
@@ -503,104 +509,118 @@ State 28
    34 statement: IF . expression THEN statement
    35          | IF . expression THEN statement ELSE statement
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    expression         go to state 52
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    expression         go to state 54
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
 State 29
 
    36 statement: WHILE . expression DO statement
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    expression         go to state 56
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    expression         go to state 58
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
 State 30
 
    37 statement: FOR . variable ASSIGNOP simple_expression TO simple_expression DO statement
 
-    ID  shift, and go to state 57
+    ID  shift, and go to state 59
 
-    variable        go to state 58
-    array_variable  go to state 36
+    variable        go to state 60
+    array_variable  go to state 38
 
 
 State 31
+
+   38 statement: READ . '(' expression ')'
+
+    '('  shift, and go to state 61
+
+
+State 32
+
+   39 statement: WRITE . '(' expression ')'
+
+    '('  shift, and go to state 62
+
+
+State 33
 
    33 statement: compound_statement .
 
     $default  reduce using rule 33 (statement)
 
 
-State 32
+State 34
 
    26 compound_statement: BBEGIN optional_statements . END
 
-    END  shift, and go to state 59
+    END  shift, and go to state 63
 
 
-State 33
+State 35
 
    27 optional_statements: statement_list .
    30 statement_list: statement_list . ';' statement
 
-    ';'  shift, and go to state 60
+    ';'  shift, and go to state 64
 
     $default  reduce using rule 27 (optional_statements)
 
 
-State 34
+State 36
 
    29 statement_list: statement .
 
     $default  reduce using rule 29 (statement_list)
 
 
-State 35
+State 37
 
    31 statement: variable . ASSIGNOP expression
 
-    ASSIGNOP  shift, and go to state 61
+    ASSIGNOP  shift, and go to state 65
 
 
-State 36
+State 38
 
-   39 variable: array_variable .
+   41 variable: array_variable .
 
-    $default  reduce using rule 39 (variable)
+    $default  reduce using rule 41 (variable)
 
 
-State 37
+State 39
 
    32 statement: procedure_statement .
 
     $default  reduce using rule 32 (statement)
 
 
-State 38
+State 40
 
    13 subprogram_declarations: subprogram_declarations subprogram_declaration ';' .
 
     $default  reduce using rule 13 (subprogram_declarations)
 
 
-State 39
+State 41
 
     7 declarations: declarations . VAR $@3 identifier_list ':' type ';'
    15 subprogram_declaration: subprogram_head declarations . subprogram_declarations compound_statement
@@ -609,202 +629,234 @@ State 39
 
     $default  reduce using rule 14 (subprogram_declarations)
 
-    subprogram_declarations  go to state 62
+    subprogram_declarations  go to state 66
 
 
-State 40
+State 42
 
     3 program: $@1 PROGRAM ID '(' identifier_list ')' ';' $@2 declarations subprogram_declarations compound_statement '.' .
 
     $default  reduce using rule 3 (program)
 
 
-State 41
+State 43
 
     7 declarations: declarations VAR $@3 identifier_list ':' . type ';'
 
-    ARRAY    shift, and go to state 63
-    INTEGER  shift, and go to state 64
-    REAL     shift, and go to state 65
+    ARRAY    shift, and go to state 67
+    INTEGER  shift, and go to state 68
+    REAL     shift, and go to state 69
 
-    type           go to state 66
-    standard_type  go to state 67
+    type           go to state 70
+    standard_type  go to state 71
 
 
-State 42
+State 44
 
    17 subprogram_head: FUNCTION ID $@4 . arguments ':' standard_type ';'
 
-    '('  shift, and go to state 68
+    '('  shift, and go to state 72
 
-    arguments  go to state 69
+    arguments  go to state 73
 
 
-State 43
+State 45
 
    20 subprogram_head: PROCEDURE ID ';' .
 
     $default  reduce using rule 20 (subprogram_head)
 
 
-State 44
+State 46
 
    19 subprogram_head: PROCEDURE ID $@5 . arguments ';'
 
-    '('  shift, and go to state 68
-
-    arguments  go to state 70
-
-
-State 45
-
-   40 array_variable: ID '[' . expression ']'
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    expression         go to state 71
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
-
-
-State 46
-
-   43 procedure_statement: ID $@8 . '(' expression_list ')'
-
     '('  shift, and go to state 72
+
+    arguments  go to state 74
 
 
 State 47
 
-   56 factor: INUM .
+   42 array_variable: ID '[' . expression ']'
 
-    $default  reduce using rule 56 (factor)
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression         go to state 75
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
 State 48
 
-   57 factor: RNUM .
+   45 procedure_statement: ID $@8 . '(' expression_list ')'
 
-    $default  reduce using rule 57 (factor)
+    '('  shift, and go to state 76
 
 
 State 49
 
-   52 factor: ID .
-   53       | ID . '[' expression ']'
-   55       | ID . $@9 '(' expression_list ')'
+   58 factor: INUM .
 
-    '['  shift, and go to state 73
-
-    '('       reduce using rule 54 ($@9)
-    $default  reduce using rule 52 (factor)
-
-    $@9  go to state 74
+    $default  reduce using rule 58 (factor)
 
 
 State 50
 
-   59 factor: NOT . factor
+   59 factor: RNUM .
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    factor  go to state 75
+    $default  reduce using rule 59 (factor)
 
 
 State 51
 
-   58 factor: '(' . expression ')'
+   54 factor: ID .
+   55       | ID . '[' expression ']'
+   57       | ID . $@9 '(' expression_list ')'
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    '['  shift, and go to state 77
 
-    expression         go to state 76
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    '('       reduce using rule 56 ($@9)
+    $default  reduce using rule 54 (factor)
+
+    $@9  go to state 78
 
 
 State 52
 
-   34 statement: IF expression . THEN statement
-   35          | IF expression . THEN statement ELSE statement
+   61 factor: NOT . factor
 
-    THEN  shift, and go to state 77
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    factor  go to state 79
 
 
 State 53
 
-   46 expression: simple_expression .
-   47           | simple_expression . RELOP simple_expression
-   49 simple_expression: simple_expression . ADDOP term
+   60 factor: '(' . expression ')'
 
-    RELOP  shift, and go to state 78
-    ADDOP  shift, and go to state 79
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    $default  reduce using rule 46 (expression)
+    expression         go to state 80
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
 State 54
 
-   48 simple_expression: term .
-   51 term: term . MULOP factor
+   34 statement: IF expression . THEN statement
+   35          | IF expression . THEN statement ELSE statement
 
-    MULOP  shift, and go to state 80
-
-    $default  reduce using rule 48 (simple_expression)
+    THEN  shift, and go to state 81
 
 
 State 55
 
-   50 term: factor .
+   48 expression: simple_expression .
+   49           | simple_expression . RELOP simple_expression
+   51 simple_expression: simple_expression . ADDOP term
 
-    $default  reduce using rule 50 (term)
+    RELOP  shift, and go to state 82
+    ADDOP  shift, and go to state 83
+
+    $default  reduce using rule 48 (expression)
 
 
 State 56
 
-   36 statement: WHILE expression . DO statement
+   50 simple_expression: term .
+   53 term: term . MULOP factor
 
-    DO  shift, and go to state 81
+    MULOP  shift, and go to state 84
+
+    $default  reduce using rule 50 (simple_expression)
 
 
 State 57
 
-   38 variable: ID .
-   40 array_variable: ID . '[' expression ']'
+   52 term: factor .
 
-    '['  shift, and go to state 45
-
-    $default  reduce using rule 38 (variable)
+    $default  reduce using rule 52 (term)
 
 
 State 58
 
-   37 statement: FOR variable . ASSIGNOP simple_expression TO simple_expression DO statement
+   36 statement: WHILE expression . DO statement
 
-    ASSIGNOP  shift, and go to state 82
+    DO  shift, and go to state 85
 
 
 State 59
+
+   40 variable: ID .
+   42 array_variable: ID . '[' expression ']'
+
+    '['  shift, and go to state 47
+
+    $default  reduce using rule 40 (variable)
+
+
+State 60
+
+   37 statement: FOR variable . ASSIGNOP simple_expression TO simple_expression DO statement
+
+    ASSIGNOP  shift, and go to state 86
+
+
+State 61
+
+   38 statement: READ '(' . expression ')'
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression         go to state 87
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
+
+
+State 62
+
+   39 statement: WRITE '(' . expression ')'
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression         go to state 88
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
+
+
+State 63
 
    26 compound_statement: BBEGIN optional_statements END .
 
     $default  reduce using rule 26 (compound_statement)
 
 
-State 60
+State 64
 
    30 statement_list: statement_list ';' . statement
 
@@ -813,31 +865,33 @@ State 60
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
-    compound_statement   go to state 31
-    statement            go to state 83
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
+    compound_statement   go to state 33
+    statement            go to state 89
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
-State 61
+State 65
 
    31 statement: variable ASSIGNOP . expression
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    expression         go to state 84
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    expression         go to state 90
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
-State 62
+State 66
 
    13 subprogram_declarations: subprogram_declarations . subprogram_declaration ';'
    15 subprogram_declaration: subprogram_head declarations subprogram_declarations . compound_statement
@@ -848,130 +902,130 @@ State 62
 
     subprogram_declaration  go to state 21
     subprogram_head         go to state 22
-    compound_statement      go to state 85
+    compound_statement      go to state 91
 
 
-State 63
+State 67
 
    10 type: ARRAY . '[' INUM DOTDOT INUM ']' OF standard_type
 
-    '['  shift, and go to state 86
+    '['  shift, and go to state 92
 
 
-State 64
+State 68
 
    11 standard_type: INTEGER .
 
     $default  reduce using rule 11 (standard_type)
 
 
-State 65
+State 69
 
    12 standard_type: REAL .
 
     $default  reduce using rule 12 (standard_type)
 
 
-State 66
+State 70
 
     7 declarations: declarations VAR $@3 identifier_list ':' type . ';'
 
-    ';'  shift, and go to state 87
+    ';'  shift, and go to state 93
 
 
-State 67
+State 71
 
     9 type: standard_type .
 
     $default  reduce using rule 9 (type)
 
 
-State 68
+State 72
 
    21 arguments: '(' . parameter_list ')'
 
     $default  reduce using rule 22 ($@6)
 
-    parameter_list  go to state 88
-    $@6             go to state 89
-
-
-State 69
-
-   17 subprogram_head: FUNCTION ID $@4 arguments . ':' standard_type ';'
-
-    ':'  shift, and go to state 90
-
-
-State 70
-
-   19 subprogram_head: PROCEDURE ID $@5 arguments . ';'
-
-    ';'  shift, and go to state 91
-
-
-State 71
-
-   40 array_variable: ID '[' expression . ']'
-
-    ']'  shift, and go to state 92
-
-
-State 72
-
-   43 procedure_statement: ID $@8 '(' . expression_list ')'
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    expression_list    go to state 93
-    expression         go to state 94
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    parameter_list  go to state 94
+    $@6             go to state 95
 
 
 State 73
 
-   53 factor: ID '[' . expression ']'
+   17 subprogram_head: FUNCTION ID $@4 arguments . ':' standard_type ';'
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    expression         go to state 95
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    ':'  shift, and go to state 96
 
 
 State 74
 
-   55 factor: ID $@9 . '(' expression_list ')'
+   19 subprogram_head: PROCEDURE ID $@5 arguments . ';'
 
-    '('  shift, and go to state 96
+    ';'  shift, and go to state 97
 
 
 State 75
 
-   59 factor: NOT factor .
+   42 array_variable: ID '[' expression . ']'
 
-    $default  reduce using rule 59 (factor)
+    ']'  shift, and go to state 98
 
 
 State 76
 
-   58 factor: '(' expression . ')'
+   45 procedure_statement: ID $@8 '(' . expression_list ')'
 
-    ')'  shift, and go to state 97
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression_list    go to state 99
+    expression         go to state 100
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
 State 77
+
+   55 factor: ID '[' . expression ']'
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression         go to state 101
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
+
+
+State 78
+
+   57 factor: ID $@9 . '(' expression_list ')'
+
+    '('  shift, and go to state 102
+
+
+State 79
+
+   61 factor: NOT factor .
+
+    $default  reduce using rule 61 (factor)
+
+
+State 80
+
+   60 factor: '(' expression . ')'
+
+    ')'  shift, and go to state 103
+
+
+State 81
 
    34 statement: IF expression THEN . statement
    35          | IF expression THEN . statement ELSE statement
@@ -981,57 +1035,59 @@ State 77
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
-    compound_statement   go to state 31
-    statement            go to state 98
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
-
-
-State 78
-
-   47 expression: simple_expression RELOP . simple_expression
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    simple_expression  go to state 99
-    term               go to state 54
-    factor             go to state 55
+    compound_statement   go to state 33
+    statement            go to state 104
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
-State 79
+State 82
 
-   49 simple_expression: simple_expression ADDOP . term
+   49 expression: simple_expression RELOP . simple_expression
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    term    go to state 100
-    factor  go to state 55
-
-
-State 80
-
-   51 term: term MULOP . factor
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    factor  go to state 101
+    simple_expression  go to state 105
+    term               go to state 56
+    factor             go to state 57
 
 
-State 81
+State 83
+
+   51 simple_expression: simple_expression ADDOP . term
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    term    go to state 106
+    factor  go to state 57
+
+
+State 84
+
+   53 term: term MULOP . factor
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    factor  go to state 107
+
+
+State 85
 
    36 statement: WHILE expression DO . statement
 
@@ -1040,285 +1096,315 @@ State 81
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
-    compound_statement   go to state 31
-    statement            go to state 102
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
+    compound_statement   go to state 33
+    statement            go to state 108
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
-State 82
+State 86
 
    37 statement: FOR variable ASSIGNOP . simple_expression TO simple_expression DO statement
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    simple_expression  go to state 103
-    term               go to state 54
-    factor             go to state 55
+    simple_expression  go to state 109
+    term               go to state 56
+    factor             go to state 57
 
 
-State 83
+State 87
+
+   38 statement: READ '(' expression . ')'
+
+    ')'  shift, and go to state 110
+
+
+State 88
+
+   39 statement: WRITE '(' expression . ')'
+
+    ')'  shift, and go to state 111
+
+
+State 89
 
    30 statement_list: statement_list ';' statement .
 
     $default  reduce using rule 30 (statement_list)
 
 
-State 84
+State 90
 
    31 statement: variable ASSIGNOP expression .
 
     $default  reduce using rule 31 (statement)
 
 
-State 85
+State 91
 
    15 subprogram_declaration: subprogram_head declarations subprogram_declarations compound_statement .
 
     $default  reduce using rule 15 (subprogram_declaration)
 
 
-State 86
+State 92
 
    10 type: ARRAY '[' . INUM DOTDOT INUM ']' OF standard_type
 
-    INUM  shift, and go to state 104
+    INUM  shift, and go to state 112
 
 
-State 87
+State 93
 
     7 declarations: declarations VAR $@3 identifier_list ':' type ';' .
 
     $default  reduce using rule 7 (declarations)
 
 
-State 88
+State 94
 
    21 arguments: '(' parameter_list . ')'
    25 parameter_list: parameter_list . ';' $@7 identifier_list ':' type
 
-    ')'  shift, and go to state 105
-    ';'  shift, and go to state 106
+    ')'  shift, and go to state 113
+    ';'  shift, and go to state 114
 
 
-State 89
+State 95
 
    23 parameter_list: $@6 . identifier_list ':' type
 
     ID  shift, and go to state 7
 
-    identifier_list  go to state 107
+    identifier_list  go to state 115
 
 
-State 90
+State 96
 
    17 subprogram_head: FUNCTION ID $@4 arguments ':' . standard_type ';'
 
-    INTEGER  shift, and go to state 64
-    REAL     shift, and go to state 65
+    INTEGER  shift, and go to state 68
+    REAL     shift, and go to state 69
 
-    standard_type  go to state 108
+    standard_type  go to state 116
 
 
-State 91
+State 97
 
    19 subprogram_head: PROCEDURE ID $@5 arguments ';' .
 
     $default  reduce using rule 19 (subprogram_head)
 
 
-State 92
-
-   40 array_variable: ID '[' expression ']' .
-
-    $default  reduce using rule 40 (array_variable)
-
-
-State 93
-
-   43 procedure_statement: ID $@8 '(' expression_list . ')'
-   45 expression_list: expression_list . ',' expression
-
-    ')'  shift, and go to state 109
-    ','  shift, and go to state 110
-
-
-State 94
-
-   44 expression_list: expression .
-
-    $default  reduce using rule 44 (expression_list)
-
-
-State 95
-
-   53 factor: ID '[' expression . ']'
-
-    ']'  shift, and go to state 111
-
-
-State 96
-
-   55 factor: ID $@9 '(' . expression_list ')'
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    expression_list    go to state 112
-    expression         go to state 94
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
-
-
-State 97
-
-   58 factor: '(' expression ')' .
-
-    $default  reduce using rule 58 (factor)
-
-
 State 98
 
-   34 statement: IF expression THEN statement .
-   35          | IF expression THEN statement . ELSE statement
+   42 array_variable: ID '[' expression ']' .
 
-    ELSE  shift, and go to state 113
-
-    $default  reduce using rule 34 (statement)
+    $default  reduce using rule 42 (array_variable)
 
 
 State 99
 
-   47 expression: simple_expression RELOP simple_expression .
-   49 simple_expression: simple_expression . ADDOP term
+   45 procedure_statement: ID $@8 '(' expression_list . ')'
+   47 expression_list: expression_list . ',' expression
 
-    ADDOP  shift, and go to state 79
-
-    $default  reduce using rule 47 (expression)
+    ')'  shift, and go to state 117
+    ','  shift, and go to state 118
 
 
 State 100
 
-   49 simple_expression: simple_expression ADDOP term .
-   51 term: term . MULOP factor
+   46 expression_list: expression .
 
-    MULOP  shift, and go to state 80
-
-    $default  reduce using rule 49 (simple_expression)
+    $default  reduce using rule 46 (expression_list)
 
 
 State 101
 
-   51 term: term MULOP factor .
+   55 factor: ID '[' expression . ']'
 
-    $default  reduce using rule 51 (term)
+    ']'  shift, and go to state 119
 
 
 State 102
+
+   57 factor: ID $@9 '(' . expression_list ')'
+
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression_list    go to state 120
+    expression         go to state 100
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
+
+
+State 103
+
+   60 factor: '(' expression ')' .
+
+    $default  reduce using rule 60 (factor)
+
+
+State 104
+
+   34 statement: IF expression THEN statement .
+   35          | IF expression THEN statement . ELSE statement
+
+    ELSE  shift, and go to state 121
+
+    $default  reduce using rule 34 (statement)
+
+
+State 105
+
+   49 expression: simple_expression RELOP simple_expression .
+   51 simple_expression: simple_expression . ADDOP term
+
+    ADDOP  shift, and go to state 83
+
+    $default  reduce using rule 49 (expression)
+
+
+State 106
+
+   51 simple_expression: simple_expression ADDOP term .
+   53 term: term . MULOP factor
+
+    MULOP  shift, and go to state 84
+
+    $default  reduce using rule 51 (simple_expression)
+
+
+State 107
+
+   53 term: term MULOP factor .
+
+    $default  reduce using rule 53 (term)
+
+
+State 108
 
    36 statement: WHILE expression DO statement .
 
     $default  reduce using rule 36 (statement)
 
 
-State 103
+State 109
 
    37 statement: FOR variable ASSIGNOP simple_expression . TO simple_expression DO statement
-   49 simple_expression: simple_expression . ADDOP term
+   51 simple_expression: simple_expression . ADDOP term
 
-    ADDOP  shift, and go to state 79
-    TO     shift, and go to state 114
+    ADDOP  shift, and go to state 83
+    TO     shift, and go to state 122
 
 
-State 104
+State 110
+
+   38 statement: READ '(' expression ')' .
+
+    $default  reduce using rule 38 (statement)
+
+
+State 111
+
+   39 statement: WRITE '(' expression ')' .
+
+    $default  reduce using rule 39 (statement)
+
+
+State 112
 
    10 type: ARRAY '[' INUM . DOTDOT INUM ']' OF standard_type
 
-    DOTDOT  shift, and go to state 115
+    DOTDOT  shift, and go to state 123
 
 
-State 105
+State 113
 
    21 arguments: '(' parameter_list ')' .
 
     $default  reduce using rule 21 (arguments)
 
 
-State 106
+State 114
 
    25 parameter_list: parameter_list ';' . $@7 identifier_list ':' type
 
     $default  reduce using rule 24 ($@7)
 
-    $@7  go to state 116
+    $@7  go to state 124
 
 
-State 107
+State 115
 
     5 identifier_list: identifier_list . ',' ID
    23 parameter_list: $@6 identifier_list . ':' type
 
     ','  shift, and go to state 10
-    ':'  shift, and go to state 117
+    ':'  shift, and go to state 125
 
 
-State 108
+State 116
 
    17 subprogram_head: FUNCTION ID $@4 arguments ':' standard_type . ';'
 
-    ';'  shift, and go to state 118
+    ';'  shift, and go to state 126
 
 
-State 109
+State 117
 
-   43 procedure_statement: ID $@8 '(' expression_list ')' .
+   45 procedure_statement: ID $@8 '(' expression_list ')' .
 
-    $default  reduce using rule 43 (procedure_statement)
-
-
-State 110
-
-   45 expression_list: expression_list ',' . expression
-
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
-
-    expression         go to state 119
-    simple_expression  go to state 53
-    term               go to state 54
-    factor             go to state 55
+    $default  reduce using rule 45 (procedure_statement)
 
 
-State 111
+State 118
 
-   53 factor: ID '[' expression ']' .
+   47 expression_list: expression_list ',' . expression
 
-    $default  reduce using rule 53 (factor)
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
+
+    expression         go to state 127
+    simple_expression  go to state 55
+    term               go to state 56
+    factor             go to state 57
 
 
-State 112
+State 119
 
-   45 expression_list: expression_list . ',' expression
-   55 factor: ID $@9 '(' expression_list . ')'
+   55 factor: ID '[' expression ']' .
 
-    ')'  shift, and go to state 120
-    ','  shift, and go to state 110
+    $default  reduce using rule 55 (factor)
 
 
-State 113
+State 120
+
+   47 expression_list: expression_list . ',' expression
+   57 factor: ID $@9 '(' expression_list . ')'
+
+    ')'  shift, and go to state 128
+    ','  shift, and go to state 118
+
+
+State 121
 
    35 statement: IF expression THEN statement ELSE . statement
 
@@ -1327,118 +1413,120 @@ State 113
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
-    compound_statement   go to state 31
-    statement            go to state 121
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
+    compound_statement   go to state 33
+    statement            go to state 129
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
-State 114
+State 122
 
    37 statement: FOR variable ASSIGNOP simple_expression TO . simple_expression DO statement
 
-    INUM  shift, and go to state 47
-    RNUM  shift, and go to state 48
-    ID    shift, and go to state 49
-    NOT   shift, and go to state 50
-    '('   shift, and go to state 51
+    INUM  shift, and go to state 49
+    RNUM  shift, and go to state 50
+    ID    shift, and go to state 51
+    NOT   shift, and go to state 52
+    '('   shift, and go to state 53
 
-    simple_expression  go to state 122
-    term               go to state 54
-    factor             go to state 55
+    simple_expression  go to state 130
+    term               go to state 56
+    factor             go to state 57
 
 
-State 115
+State 123
 
    10 type: ARRAY '[' INUM DOTDOT . INUM ']' OF standard_type
 
-    INUM  shift, and go to state 123
+    INUM  shift, and go to state 131
 
 
-State 116
+State 124
 
    25 parameter_list: parameter_list ';' $@7 . identifier_list ':' type
 
     ID  shift, and go to state 7
 
-    identifier_list  go to state 124
+    identifier_list  go to state 132
 
 
-State 117
+State 125
 
    23 parameter_list: $@6 identifier_list ':' . type
 
-    ARRAY    shift, and go to state 63
-    INTEGER  shift, and go to state 64
-    REAL     shift, and go to state 65
+    ARRAY    shift, and go to state 67
+    INTEGER  shift, and go to state 68
+    REAL     shift, and go to state 69
 
-    type           go to state 125
-    standard_type  go to state 67
+    type           go to state 133
+    standard_type  go to state 71
 
 
-State 118
+State 126
 
    17 subprogram_head: FUNCTION ID $@4 arguments ':' standard_type ';' .
 
     $default  reduce using rule 17 (subprogram_head)
 
 
-State 119
+State 127
 
-   45 expression_list: expression_list ',' expression .
+   47 expression_list: expression_list ',' expression .
 
-    $default  reduce using rule 45 (expression_list)
-
-
-State 120
-
-   55 factor: ID $@9 '(' expression_list ')' .
-
-    $default  reduce using rule 55 (factor)
+    $default  reduce using rule 47 (expression_list)
 
 
-State 121
+State 128
+
+   57 factor: ID $@9 '(' expression_list ')' .
+
+    $default  reduce using rule 57 (factor)
+
+
+State 129
 
    35 statement: IF expression THEN statement ELSE statement .
 
     $default  reduce using rule 35 (statement)
 
 
-State 122
+State 130
 
    37 statement: FOR variable ASSIGNOP simple_expression TO simple_expression . DO statement
-   49 simple_expression: simple_expression . ADDOP term
+   51 simple_expression: simple_expression . ADDOP term
 
-    ADDOP  shift, and go to state 79
-    DO     shift, and go to state 126
+    ADDOP  shift, and go to state 83
+    DO     shift, and go to state 134
 
 
-State 123
+State 131
 
    10 type: ARRAY '[' INUM DOTDOT INUM . ']' OF standard_type
 
-    ']'  shift, and go to state 127
+    ']'  shift, and go to state 135
 
 
-State 124
+State 132
 
     5 identifier_list: identifier_list . ',' ID
    25 parameter_list: parameter_list ';' $@7 identifier_list . ':' type
 
     ','  shift, and go to state 10
-    ':'  shift, and go to state 128
+    ':'  shift, and go to state 136
 
 
-State 125
+State 133
 
    23 parameter_list: $@6 identifier_list ':' type .
 
     $default  reduce using rule 23 (parameter_list)
 
 
-State 126
+State 134
 
    37 statement: FOR variable ASSIGNOP simple_expression TO simple_expression DO . statement
 
@@ -1447,58 +1535,60 @@ State 126
     IF      shift, and go to state 28
     WHILE   shift, and go to state 29
     FOR     shift, and go to state 30
+    READ    shift, and go to state 31
+    WRITE   shift, and go to state 32
 
-    compound_statement   go to state 31
-    statement            go to state 129
-    variable             go to state 35
-    array_variable       go to state 36
-    procedure_statement  go to state 37
+    compound_statement   go to state 33
+    statement            go to state 137
+    variable             go to state 37
+    array_variable       go to state 38
+    procedure_statement  go to state 39
 
 
-State 127
+State 135
 
    10 type: ARRAY '[' INUM DOTDOT INUM ']' . OF standard_type
 
-    OF  shift, and go to state 130
+    OF  shift, and go to state 138
 
 
-State 128
+State 136
 
    25 parameter_list: parameter_list ';' $@7 identifier_list ':' . type
 
-    ARRAY    shift, and go to state 63
-    INTEGER  shift, and go to state 64
-    REAL     shift, and go to state 65
+    ARRAY    shift, and go to state 67
+    INTEGER  shift, and go to state 68
+    REAL     shift, and go to state 69
 
-    type           go to state 131
-    standard_type  go to state 67
+    type           go to state 139
+    standard_type  go to state 71
 
 
-State 129
+State 137
 
    37 statement: FOR variable ASSIGNOP simple_expression TO simple_expression DO statement .
 
     $default  reduce using rule 37 (statement)
 
 
-State 130
+State 138
 
    10 type: ARRAY '[' INUM DOTDOT INUM ']' OF . standard_type
 
-    INTEGER  shift, and go to state 64
-    REAL     shift, and go to state 65
+    INTEGER  shift, and go to state 68
+    REAL     shift, and go to state 69
 
-    standard_type  go to state 132
+    standard_type  go to state 140
 
 
-State 131
+State 139
 
    25 parameter_list: parameter_list ';' $@7 identifier_list ':' type .
 
     $default  reduce using rule 25 (parameter_list)
 
 
-State 132
+State 140
 
    10 type: ARRAY '[' INUM DOTDOT INUM ']' OF standard_type .
 

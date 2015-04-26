@@ -1,5 +1,5 @@
-mypc: y.tab.o lex.yy.o tree.o scope.o node.o arglist.o
-	gcc -g -o mypc tree.o scope.o node.o arglist.o y.tab.o lex.yy.o -lfl
+pasc: y.tab.o lex.yy.o tree.o scope.o node.o arglist.o
+	gcc -g -o pasc tree.o scope.o node.o arglist.o y.tab.o lex.yy.o -lfl
 tree.o: tree.c
 	gcc -g -c tree.c
 scope.o: scope.c
@@ -18,4 +18,3 @@ lex.yy.c: pc.l
 	lex -l pc.l
 clean:
 	rm -f lex.yy.* y.tab.* *.o mypc
-
