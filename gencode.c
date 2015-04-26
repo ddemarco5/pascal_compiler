@@ -9,6 +9,7 @@
 //This will be the head of our asm, we will declare it here.
 #define HEAD -1
 #define PRINTF -2
+#define MAXREG 4
 
 void genasm(FILE *f, int instr);
 
@@ -18,7 +19,7 @@ void printcodelist(codelist_t *codelist){
 	printcodelist(codelist->next);
 }
 
-void gencode(codelist_t *codelist){
+void genprogram(codelist_t *codelist){
 	FILE *f;
 	f = fopen("output.s", "w");
 	codelist_t *iter = codelist;
@@ -106,6 +107,36 @@ void genasm(FILE *f, int instr){
 			break;
 
 	}
+}
+
+void gencode_helper(tree_t *tree, tree_t *prev){
+	if((is_leaf(tree) == 1) && (prev->left == tree)){
+		fprintf(stderr, "CASE 0\n");
+	}
+	else if(is_leaf(tree->right) == 1){
+		fprintf(stderr, "CASE 1\n");
+		gencode_helper(tree->left, tree);
+	}
+	else if(tree->right->rval > tree->left->rval){
+		fprintf(stderr, "CASE 2\n");
+		gencode_helper(tree->right, tree);
+		gencode_helper(tree->left, tree);
+	}
+	else if(tree->left->rval >= tree->right->rval){
+		fprintf(stderr, "CASE 3\n");
+		gencode_helper(tree->left, tree);
+		gencode_helper(tree->right, tree);
+	}
+	else if((tree->left->rval > MAXREG) && (tree->right->rval > MAXREG)){
+		fprintf(stderr, "CASE 4\n");
+	}
+	else fprintf(stderr, "NUTHIN!\n");
+
+}
+
+// For now print of the rules triggered
+void gencode(tree_t *tree){
+	gencode_helper(tree, tree);	
 }
 
 void addhead(codelist_t *codelist){

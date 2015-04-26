@@ -383,6 +383,8 @@ statement
 	| WRITE '(' expression ')' 
 	{
 		gentree($3);
+		fprintf(stderr, "\n");
+		gencode($3);
 		fprintf(stderr, "\n\nPRINTING TREE\n");
 		print_tree($3,0);
 		fprintf(stderr, "\n\n");
@@ -487,7 +489,7 @@ expression_list
 
 expression
 	: simple_expression
-		{ $$ = $1; }
+		{ $$ = $1;}
 	| simple_expression RELOP simple_expression
 		{ $$ = make_op(RELOP, $2, $1, $3); }
 	;
@@ -585,7 +587,7 @@ main()
 
 yyparse();
 
-gencode(codelist);
+genprogram(codelist);
 
 }
 
