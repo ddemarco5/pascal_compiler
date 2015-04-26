@@ -18,7 +18,7 @@ FILE *outfile;
 
 regstack_t *regstack;
 
-void genasm(FILE *f, int instr, char* arg1, char* arg2);
+void genasm(FILE *f, tree_t *tree, char* arg1, char* arg2);
 
 void initfile(){
 	outfile = fopen("output.s", "w");
@@ -39,6 +39,7 @@ void *pushreg(char* reg){
 regstack_t *popreg(){
 	regstack_t *toreturn = regstack;
 	regstack = toreturn->prev;
+	toreturn->prev = NULL;
 	return toreturn;
 }
 
@@ -82,7 +83,7 @@ void gentree(tree_t *tree){
 }
 
 void addcode(int instruction){
-	genasm(outfile, instruction, NULL, NULL);
+	genasm(outfile, make_tree(instruction, NULL, NULL), NULL, NULL);
 }
 
 addhead(){
@@ -91,12 +92,24 @@ addhead(){
 }
 
 void geninstr(FILE *f, char* instr, char* arg1, char* arg2){	
-	fprintf(f, "\t%s \t$%s, %s\n", instr, arg1, arg2);
+	fprintf(f, "\t%s \t%s, %s\n", instr, arg1, arg2);
 }
 
 // Our non-dynamic assembly bits.
-void genasm(FILE *f, int instr, char* arg1, char* arg2){
-	switch(instr){
+void genasm(FILE *f, tree_t *tree, char* arg1, char* arg2){
+	switch(tree->type){
+		case ADDOP:
+			if(tree->attribute.opval == PLUS)
+				fprintf(f, "\taddl \t%s, %s\n", arg1, arg2);
+			else if(tree->attribute.opval == MINUS)
+				fprintf(f, "\tsubl \t%s, %s\n", arg1, arg2);
+			break;
+		case MULOP:
+			if(tree->attribute.opval == STAR)
+				fprintf(f, "\timull \t%s, %s\n", arg1, arg2);
+			else if(tree->attribute.opval == SLASH)
+				fprintf(f, "\timull \t%s, %s\n", arg1, arg2);
+			break;
 		case HEAD:
 			fprintf(f, ".LFE0:\n"
 					 "\t.size   main, .-main\n"
@@ -104,13 +117,13 @@ void genasm(FILE *f, int instr, char* arg1, char* arg2){
 			break;
 		case PRINTF:
 			fprintf(f, ".LC0:\n"
-					 "\t.string \"%%d\"\n"
+					 "\t.string \"%%d\\n\"\n"
 					 "\t.text\n"
 					 "\t.globl  main\n"
 					 "\t.type   main, @function\n");
 			break;
 		case WRITE:
-			fprintf(f, "\tmovl    $10, %%esi\n"
+			fprintf(f, "\tmovl    %%edx, %%esi\n"
 					"\tmovl    $.LC0, %%edi\n"
 					"\tcall    printf\n");
 			break;
@@ -129,8 +142,26 @@ void genasm(FILE *f, int instr, char* arg1, char* arg2){
 	}
 }
 
+char *gettreeval(tree_t *tree){
+	char *buf = (char *)malloc(sizeof(int)*3+2);
+	switch(tree->type){
+		case INUM:
+			snprintf(buf, sizeof(buf), "$%d", tree->attribute.ival);
+			break;
+		case RNUM:
+			snprintf(buf, sizeof(buf), "$%d", tree->attribute.rval);
+			break;
+		}
+	return buf;
+}
+
 void gencode_helper(tree_t *tree, tree_t *prev){
 	if((tree->left == NULL) && (tree->right == NULL)){
+		fprintf(stderr, "CASE (NULL) 0\n");
+		geninstr(outfile, "movl", gettreeval(tree) , regstack->reg);
+		return;
+	}
+	/*else if((is_leaf(tree) == 1) && (prev->left == tree)){
 		fprintf(stderr, "CASE 0\n");
 		char buf[sizeof(int)*3+2];
 		switch(tree->type){
@@ -143,23 +174,30 @@ void gencode_helper(tree_t *tree, tree_t *prev){
 		}
 		geninstr(outfile, "movl", buf , regstack->reg);
 		return;
-	}
-	if((is_leaf(tree) == 1) && (prev->left == tree)){
-		fprintf(stderr, "CASE 0\n");
-	}
+
+	}*/
 	else if(is_leaf(tree->right) == 1){
 		fprintf(stderr, "CASE 1\n");
 		gencode_helper(tree->left, tree);
+		genasm(outfile, tree, gettreeval(tree->right), regstack->reg); 
 	}
 	else if(tree->right->rval > tree->left->rval){
 		fprintf(stderr, "CASE 2\n");
+		swapreg();
 		gencode_helper(tree->right, tree);
+		regstack_t *R = popreg();
 		gencode_helper(tree->left, tree);
+		genasm(outfile, tree, R->reg, regstack->reg);
+		pushreg(R->reg);
+		swapreg();
 	}
 	else if(tree->left->rval >= tree->right->rval){
 		fprintf(stderr, "CASE 3\n");
 		gencode_helper(tree->left, tree);
+		regstack_t *R = popreg();
 		gencode_helper(tree->right, tree);
+		genasm(outfile, tree, regstack->reg, R->reg);
+		pushreg(R->reg);
 	}
 	else if((tree->left->rval > MAXREG) && (tree->right->rval > MAXREG)){
 		fprintf(stderr, "CASE 4\n");

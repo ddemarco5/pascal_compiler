@@ -1,4 +1,4 @@
 program One(input, output);
 begin
-  write(1+1)
+  write(1/2)
 end.
