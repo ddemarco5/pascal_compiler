@@ -33,6 +33,14 @@ void gencode(codelist_t *codelist){
 	fclose(f);
 }
 
+int is_leaf(tree_t *tree){
+	if((tree->right == NULL) && (tree->left == NULL)) return 1;
+	else return 0;
+}
+void gencode_tree(tree_t *tree){
+
+}
+
 codelist_t *getend(codelist_t *codelist){
 	if(codelist->next == NULL) return codelist;
 	getend(codelist->next);

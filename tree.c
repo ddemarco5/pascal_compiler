@@ -43,7 +43,8 @@ tree_t *make_tree(int type, tree_t *left, tree_t *right)
 
 		  p->type = type;
 		  p->left = left;
-		  p->right = right;	
+		  p->right = right;
+		  p->rval = 0;
 		  return p;
 }
 
@@ -123,6 +124,7 @@ void print_tree(tree_t *t, int spaces)
 				fprintf(stderr, "[UNKNOWN]");
 				break;
 		  }
+		  fprintf(stderr, " - rval:%d", t->rval);
 		  fprintf(stderr, "\n");
 
 		  /* go left */

@@ -369,7 +369,7 @@ statement
 	  }
 	| FOR variable ASSIGNOP simple_expression TO simple_expression DO statement 
 	  { 
-			fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
+			//fprintf(stderr, "LKDLKJSDLKJD: %d,%d\n", $2->attribute.sval->type, $4->type);
 			if($4->type != $6->type){
 				fprintf(stderr, "ERROR: Expressions not same type.\n");
 				exit(1);

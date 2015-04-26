@@ -3,6 +3,7 @@
 
 typedef struct tree_s {
 	int type;		/* INUM, RNUM, ADDOP, MULOP, RELOP */
+	int rval;		/* For tree labelling portion of gencode */
 	union {
 		int ival;	/* INUM */
 		float rval;	/* RNUM */
