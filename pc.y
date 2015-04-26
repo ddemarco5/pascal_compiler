@@ -90,6 +90,7 @@ program:
 	 codelist->type = -99;
 	 
 	 addhead(codelist);
+	 addcode(codelist, 11);
 	 //printcodelist(codelist);
 	}
 	/* Right now we aren't putting a type for input and output in the symbol table */
@@ -99,7 +100,10 @@ program:
 	subprogram_declarations
 	compound_statement
 	'.'
-	{ top_scope = scope_pop(top_scope); }
+	{
+		addcode(codelist, 12);
+		top_scope = scope_pop(top_scope); 
+	}
 	;
 
 identifier_list
@@ -376,7 +380,7 @@ statement
 			}
 	  }
 	| READ '(' expression ')'
-	| WRITE '(' expression ')'
+	| WRITE '(' expression ')' {addcode(codelist, WRITE);}
 	;
 
 variable

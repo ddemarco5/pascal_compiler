@@ -8,6 +8,7 @@
 
 //This will be the head of our asm, we will declare it here.
 #define HEAD -1
+#define PRINTF -2
 
 void genasm(FILE *f, int instr);
 
@@ -24,8 +25,9 @@ void gencode(codelist_t *codelist){
 	if(iter == NULL) fprintf(stderr, "It's null fag.\n");
 	printcodelist(codelist);
 	while(iter != NULL){
-		fprintf(stderr, "DOING THIS THING!\n");
+		fprintf(stderr, "generating code for instr %d\n", iter->type);
 		genasm(f, iter->type);
+		//fprintf(f, "\n");
 		iter = iter->next;
 	}
 	fclose(f);
@@ -52,11 +54,38 @@ void genasm(FILE *f, int instr){
 	switch(instr){
 		case HEAD:
 			fprintf(f, ".LFE0:\n"
-					 ".size   main, .-main\n"
-					 ".ident  \"pasc\"\n");
+					 "\t.size   main, .-main\n"
+					 "\t.ident  \"pasc\"\n");
+			break;
+		case PRINTF:
+			fprintf(f, ".LC0:\n"
+					 "\t.string \"%%d\"\n"
+					 "\t.text\n"
+					 "\t.globl  main\n"
+					 "\t.type   main, @function\n");
+			break;
+		case WRITE:
+			fprintf(f, "\tmovl    $10, %%esi\n"
+					"\tmovl    $.LC0, %%edi\n"
+					"\tcall    printf\n");
+			break;
+		case 11://main open
+			fprintf(f, "main:\n"
+					".LFB0:\n"  
+					"\tpushq   %rbp\n"
+					"\tmovq    %rsp, %rbp\n");
+			break;
+		case 12://main close
+			fprintf(f, "\tmovl    $0, %%eax\n"
+					"\tpopq    %rbp\n"
+					"\tret\n");
+			break;
+
 	}
 }
 
 void addhead(codelist_t *codelist){
 	addcode(codelist, HEAD);
+	addcode(codelist, PRINTF);
+	//addcode(codelist, 11);
 }
