@@ -17,6 +17,7 @@ begin
   else x := 2;
   while x = 1 do x := x + x;
   a := H; *)
+  read(input);
   foo := 1
 end;
 

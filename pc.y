@@ -416,6 +416,10 @@ procedure_statement
 	| ID 
 	{
 		fprintf(stderr, "PUSH FUNCSTACK.\n");
+		if( scope_search_all(top_scope, $1) == NULL){
+			fprintf(stderr, "Undeclared function use attempted.\n");
+			exit(1);
+		}
 		funcstacktmp = push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} '(' expression_list ')'
@@ -505,6 +509,11 @@ factor
 	| ID 
 	{
 		fprintf(stderr, "PUSH FUNCSTACK.\n");
+		
+		if( scope_search_all(top_scope, $1) == NULL){
+			fprintf(stderr, "Undeclared function use attempted.\n");
+			exit(1);
+		}
 		funcstacktmp = push_funcstack(funcstacktmp, scope_search_all(top_scope, $1));
 		print_funcstack(funcstacktmp);
 	} 
