@@ -13,7 +13,7 @@ extern scope_t *top_scope;
 extern node_t *tmp;
 extern namelist_t *nametmp;
 extern funcstack_t *funcstacktmp;
-extern codelist_t *codelist;
+//extern codelist_t *codelist;
 
 %}
 
@@ -84,13 +84,8 @@ program:
 	 funcstacktmp = init_funcstack();
 	 //gencode bit
 	 
-	 //need to init here. Can't in the gencode file for some reason.
-	 codelist = (codelist_t *)malloc(sizeof(codelist_t));
-	 codelist->next = NULL;
-	 codelist->type = -99;
-	 
-	 addhead(codelist);
-	 addcode(codelist, 11);
+	 addhead();
+	 addcode(11);
 	 //printcodelist(codelist);
 	}
 	/* Right now we aren't putting a type for input and output in the symbol table */
@@ -101,7 +96,7 @@ program:
 	compound_statement
 	'.'
 	{
-		addcode(codelist, 12);
+		addcode(12);
 		top_scope = scope_pop(top_scope); 
 	}
 	;
@@ -383,13 +378,13 @@ statement
 	| WRITE '(' expression ')' 
 	{
 		gentree($3);
+		print_tree($3,0);
 		fprintf(stderr, "\n");
 		gencode($3);
 		fprintf(stderr, "\n\nPRINTING TREE\n");
-		print_tree($3,0);
 		fprintf(stderr, "\n\n");
 
-		addcode(codelist, WRITE);
+		addcode(WRITE);
 	}
 	;
 
@@ -575,7 +570,7 @@ scope_t *top_scope;
 node_t *tmp;
 namelist_t *nametmp;
 funcstack_t *funcstacktmp;
-codelist_t *codelist;
+//codelist_t *codelist;
 
 main()
 {
@@ -583,11 +578,14 @@ main()
 	tmp = NULL;
 	nametmp = NULL;
 	funcstacktmp = NULL;
-	codelist = NULL;
+	//codelist = NULL;
+
+initfile();
 
 yyparse();
 
-genprogram(codelist);
+closefile();
+//genprogram(codelist);
 
 }
 

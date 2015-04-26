@@ -11,15 +11,19 @@
 #define PRINTF -2
 #define MAXREG 4
 
-void genasm(FILE *f, int instr);
+FILE *outfile;
 
-void printcodelist(codelist_t *codelist){
-	if(codelist == NULL) return;
-	fprintf(stderr, "%d,\n", codelist->type);
-	printcodelist(codelist->next);
+void initfile(){
+	outfile = fopen("output.s", "w");
 }
 
-void genprogram(codelist_t *codelist){
+void closefile(){
+	fclose(outfile);
+}
+
+void genasm(FILE *f, int instr);
+
+/* void genprogram(){
 	FILE *f;
 	f = fopen("output.s", "w");
 	codelist_t *iter = codelist;
@@ -33,6 +37,7 @@ void genprogram(codelist_t *codelist){
 	}
 	fclose(f);
 }
+*/
 
 int is_leaf(tree_t *tree){
 	if((tree->right == NULL) && (tree->left == NULL)) return 1;
@@ -58,21 +63,13 @@ void gentree(tree_t *tree){
 	}
 }
 
-codelist_t *getend(codelist_t *codelist){
-	if(codelist->next == NULL) return codelist;
-	getend(codelist->next);
+void addcode(int instruction){
+	genasm(outfile, instruction);
 }
 
-void addcode(codelist_t *codelist, int instruction){
-	if(codelist->type == -99){
-		codelist->type = instruction;
-		return;
-	}
-	codelist_t *end = getend(codelist);
-	codelist_t *newcode = (codelist_t *)malloc(sizeof(codelist_t));
-	newcode->type = instruction;
-	newcode->next = NULL;
-	end->next = newcode;
+addhead(){
+	addcode(HEAD);
+	addcode(PRINTF);
 }
 
 void genasm(FILE *f, int instr){
@@ -110,6 +107,10 @@ void genasm(FILE *f, int instr){
 }
 
 void gencode_helper(tree_t *tree, tree_t *prev){
+	if((tree->left == NULL) && (tree->right == NULL)){
+		fprintf(stderr, "CASE 0\n");
+		return;
+	}
 	if((is_leaf(tree) == 1) && (prev->left == tree)){
 		fprintf(stderr, "CASE 0\n");
 	}
@@ -137,10 +138,4 @@ void gencode_helper(tree_t *tree, tree_t *prev){
 // For now print of the rules triggered
 void gencode(tree_t *tree){
 	gencode_helper(tree, tree);	
-}
-
-void addhead(codelist_t *codelist){
-	addcode(codelist, HEAD);
-	addcode(codelist, PRINTF);
-	//addcode(codelist, 11);
 }
