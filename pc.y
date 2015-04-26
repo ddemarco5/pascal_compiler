@@ -269,17 +269,17 @@ statement_list
 
 statement
 	: variable ASSIGNOP expression
-		{ 	/*
-			fprintf(stderr, "\n\nPRINTING TREE\n");
-			print_tree($3,0);
-			fprintf(stderr, "\n\n");*/
-            // Begin left/right side type checking
-            int x,y;  //x will be the left side check, y will be the right.
-            x = y = -1;
-            if(($3->type == FUNCTION) || ($3->type == ARRAY_ACCESS)){
-                y = $3->left->attribute.sval->rtype;
-            }
-            else{
+		{ 	
+		fprintf(stderr, "\n\nPRINTING TREE\n");
+		print_tree($3,0);
+		fprintf(stderr, "\n\n");
+            	// Begin left/right side type checking
+            	int x,y;  //x will be the left side check, y will be the right.
+            	x = y = -1;
+            	if(($3->type == FUNCTION) || ($3->type == ARRAY_ACCESS)){
+                	y = $3->left->attribute.sval->rtype;
+            	}
+            	else{
                     y = get_branch_type($3);
                     if(y == RNUM) y = REAL;
                     if(y == INUM) y = INTEGER;
@@ -380,7 +380,15 @@ statement
 			}
 	  }
 	| READ '(' expression ')'
-	| WRITE '(' expression ')' {addcode(codelist, WRITE);}
+	| WRITE '(' expression ')' 
+	{
+		gentree($3);
+		fprintf(stderr, "\n\nPRINTING TREE\n");
+		print_tree($3,0);
+		fprintf(stderr, "\n\n");
+
+		addcode(codelist, WRITE);
+	}
 	;
 
 variable

@@ -8,6 +8,7 @@ typedef struct codelist_s{
 codelist_t;
 
 void printcodelist(codelist_t *codelist);
+void gentree(tree_t *tree);
 void gencode(codelist_t *codelist);
 void addcode(codelist_t *codelist, int instruction);
 void addhead(codelist_t *codelist);

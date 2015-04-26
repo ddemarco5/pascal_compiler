@@ -37,8 +37,24 @@ int is_leaf(tree_t *tree){
 	if((tree->right == NULL) && (tree->left == NULL)) return 1;
 	else return 0;
 }
-void gencode_tree(tree_t *tree){
+void gentree(tree_t *tree){
+	if((tree->left == NULL) && (tree->right == NULL)) return;
+	if(is_leaf(tree->left) != 1) gentree(tree->left);
+	if(is_leaf(tree->right) != 1) gentree(tree->right);
 
+	if(is_leaf(tree->left) == 1) tree->left->rval = 1;
+
+
+	if(tree->right->rval == tree->left->rval){
+		tree->rval=tree->right->rval+tree->left->rval;
+		return;
+	}
+	else{
+		int a,b;
+		a = tree->right->rval;
+		b = tree->left->rval;
+		tree->rval = a > b ? a : b; 
+	}
 }
 
 codelist_t *getend(codelist_t *codelist){
