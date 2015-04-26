@@ -9,9 +9,16 @@
 //This will be the head of our asm, we will declare it here.
 #define HEAD -1
 #define PRINTF -2
-#define MAXREG 4
+#define MAXREG 2
+//Declaring our R's for the register stack.
+#define R0 "%edx"
+#define R1 "%ebx"
 
 FILE *outfile;
+
+regstack_t *regstack;
+
+void genasm(FILE *f, int instr, char* arg1, char* arg2);
 
 void initfile(){
 	outfile = fopen("output.s", "w");
@@ -21,23 +28,34 @@ void closefile(){
 	fclose(outfile);
 }
 
-void genasm(FILE *f, int instr);
-
-/* void genprogram(){
-	FILE *f;
-	f = fopen("output.s", "w");
-	codelist_t *iter = codelist;
-	if(iter == NULL) fprintf(stderr, "It's null fag.\n");
-	printcodelist(codelist);
-	while(iter != NULL){
-		fprintf(stderr, "generating code for instr %d\n", iter->type);
-		genasm(f, iter->type);
-		//fprintf(f, "\n");
-		iter = iter->next;
-	}
-	fclose(f);
+void *pushreg(char* reg){
+	regstack_t *newreg = (regstack_t *)malloc(sizeof(regstack_t));
+	newreg->prev = regstack;
+	newreg->reg = reg;
+	regstack = newreg;
+	//return newreg;
 }
-*/
+
+regstack_t *popreg(){
+	regstack_t *toreturn = regstack;
+	regstack = toreturn->prev;
+	return toreturn;
+}
+
+void *swapreg(){
+	regstack_t *first = popreg();
+	regstack_t *second = popreg();
+	pushreg(second->reg);
+	pushreg(first->reg);
+}
+
+void *regflush(regstack_t *stack){
+	if(stack == NULL) return;
+	regflush(stack->prev);
+	free(stack);
+	stack = NULL;
+}
+
 
 int is_leaf(tree_t *tree){
 	if((tree->right == NULL) && (tree->left == NULL)) return 1;
@@ -64,7 +82,7 @@ void gentree(tree_t *tree){
 }
 
 void addcode(int instruction){
-	genasm(outfile, instruction);
+	genasm(outfile, instruction, NULL, NULL);
 }
 
 addhead(){
@@ -72,7 +90,12 @@ addhead(){
 	addcode(PRINTF);
 }
 
-void genasm(FILE *f, int instr){
+void geninstr(FILE *f, char* instr, char* arg1, char* arg2){	
+	fprintf(f, "\t%s \t$%s, %s\n", instr, arg1, arg2);
+}
+
+// Our non-dynamic assembly bits.
+void genasm(FILE *f, int instr, char* arg1, char* arg2){
 	switch(instr){
 		case HEAD:
 			fprintf(f, ".LFE0:\n"
@@ -109,6 +132,16 @@ void genasm(FILE *f, int instr){
 void gencode_helper(tree_t *tree, tree_t *prev){
 	if((tree->left == NULL) && (tree->right == NULL)){
 		fprintf(stderr, "CASE 0\n");
+		char buf[sizeof(int)*3+2];
+		switch(tree->type){
+		case INUM:
+			snprintf(buf, sizeof(buf), "%d", tree->attribute.ival);
+			break;
+		case RNUM:
+			snprintf(buf, sizeof(buf), "%d", tree->attribute.rval);
+			break;
+		}
+		geninstr(outfile, "movl", buf , regstack->reg);
 		return;
 	}
 	if((is_leaf(tree) == 1) && (prev->left == tree)){
@@ -137,5 +170,10 @@ void gencode_helper(tree_t *tree, tree_t *prev){
 
 // For now print of the rules triggered
 void gencode(tree_t *tree){
-	gencode_helper(tree, tree);	
+	regstack = NULL;
+	if(tree->rval >= 1) pushreg(R1);
+	if(tree->rval = 2) pushreg(R0);
+
+	gencode_helper(tree, tree);
+	regflush(regstack);
 }
