@@ -46,8 +46,8 @@ regstack_t *popreg(){
 void *swapreg(){
 	regstack_t *first = popreg();
 	regstack_t *second = popreg();
-	pushreg(second->reg);
 	pushreg(first->reg);
+	pushreg(second->reg);
 }
 
 void *regflush(regstack_t *stack){

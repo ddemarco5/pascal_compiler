@@ -11,7 +11,11 @@ main:
 	pushq   %rbp
 	movq    %rsp, %rbp
 	movl 	$1, %edx
-	imull 	$2, %edx
+	addl 	$1, %edx
+	movl 	$1, %ebx
+	addl 	$1, %ebx
+	imull 	$1, %ebx
+	addl 	%ebx, %edx
 	movl    %edx, %esi
 	movl    $.LC0, %edi
 	call    printf
