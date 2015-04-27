@@ -10,12 +10,14 @@ main:
 .LFB0:
 	pushq   %rbp
 	movq    %rsp, %rbp
-	movl 	$5, %ebx
+	movl 	$4, %ebx
 	movl 	%ebx, -12(%rbp)
 	movl 	$6, %ebx
 	movl 	%ebx, -16(%rbp)
-	movl 	-12(%rbp), %ebx
-	addl 	-16(%rbp), %ebx
+	movl 	$0, %ebx
+	subl 	$1, %ebx
+	movl 	%ebx, -20(%rbp)
+	movl 	-20(%rbp), %ebx
 	movl    %ebx, %esi
 	movl    $.LC0, %edi
 	call    printf

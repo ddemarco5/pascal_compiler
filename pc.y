@@ -593,6 +593,9 @@ yyparse();
 closefile();
 //genprogram(codelist);
 
+system("gcc -c output.s -o output.o");
+system("gcc output.o -o Dragon");
+
 }
 
 yyerror(char *message)

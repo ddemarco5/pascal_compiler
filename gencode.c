@@ -112,7 +112,7 @@ void genasm(FILE *f, tree_t *tree, char* arg1, char* arg2){
 			fprintf(f, "\tmovl \t%s, %d(%%rbp)\n", R0, tree->left->attribute.sval->offset);
 			break;
 		case ID:
-			fprintf(f, "\tmovl \t%d(%%rbp), %s\n", tree->attribute.sval->offset, R0);
+			fprintf(f, "\tmovl \t%d(%%rbp), %s\n", tree->attribute.sval->offset, arg2);
 			break;
 		case INUM:
 			fprintf(f, "\tmovl \t%s, %s\n", arg1, arg2);
