@@ -1,7 +1,4 @@
 	.file	"one.c"
-	.section	.rodata
-.LC0:
-	.string	"%d"
 	.text
 	.globl	main
 	.type	main, @function
@@ -13,10 +10,8 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$0, %esi
-	movl	$.LC0, %edi
-	movl	$0, %eax
-	call	printf
+	movl	$4, -4(%rbp)
+	movl	$5, -4(%rbp)
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret

@@ -106,11 +106,13 @@ identifier_list
 		{ 
 		scope_insert(top_scope, $1);
 		insert_name(nametmp, $1);
+		register_var(scope_search_all(top_scope, $1));
 		}
 	| identifier_list ',' ID
 		{ 
 		scope_insert(top_scope, $3); 
 		insert_name(nametmp, $3);
+		register_var(scope_search_all(top_scope, $3));
 		}
 	;
 
@@ -338,6 +340,10 @@ statement
                 exit(1);
             }
 
+	   /* Gencode portion */
+	   gentree($3);
+	   gencode($3);
+	   addcode_t(make_tree(ASSIGNOP, $1, $3));
         }
 	| procedure_statement
 	| compound_statement

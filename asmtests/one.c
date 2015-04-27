@@ -2,5 +2,7 @@
 
 main()
 {
-	    printf("%d", 1/2);
+	int x;
+	x = 4;
+	x = 5;
 }

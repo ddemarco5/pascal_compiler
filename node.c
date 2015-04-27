@@ -11,6 +11,7 @@ node_t *make_node(char *name)
 	p->numargs = 0;
 	p->name = strdup(name);
 	p->returned = 0;
+	p->offset = 0;
 	return p;
 }
 

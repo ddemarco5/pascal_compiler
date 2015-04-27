@@ -8,7 +8,9 @@ typedef struct node_s
 	/* extra information */
 	int rtype;
 	int returned; //treated as bool
-	
+
+	int offset; //for assembly generation.
+
 	//function/procedure argument vars
 	int numargs;
 
