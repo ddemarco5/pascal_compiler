@@ -14,7 +14,7 @@ main:
 	movl 	%ebx, -12(%rbp)
 	movl 	$6, %ebx
 	movl 	%ebx, -16(%rbp)
-	movl 	$1, %ebx
+	movl 	-12(%rbp), %ebx
 	addl 	-16(%rbp), %ebx
 	movl    %ebx, %esi
 	movl    $.LC0, %edi

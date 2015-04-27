@@ -13,8 +13,8 @@
 #define MAXREG 3
 //Declaring our R's for the register stack.
 #define R0 "%ebx"
-#define R1 "%edx"
-#define R2 "%ecx"
+#define R1 "%ecx"
+#define R2 "%edx"
 
 FILE *outfile;
 
@@ -115,6 +115,9 @@ void genasm(FILE *f, tree_t *tree, char* arg1, char* arg2){
 			fprintf(f, "\tmovl \t%d(%%rbp), %s\n", tree->attribute.sval->offset, R0);
 			break;
 		case INUM:
+			fprintf(f, "\tmovl \t%s, %s\n", arg1, arg2);
+			break;
+		case RNUM:
 			fprintf(f, "\tmovl \t%s, %s\n", arg1, arg2);
 			break;
 		case ADDOP:
@@ -218,10 +221,12 @@ void gencode_helper(tree_t *tree, tree_t *prev){
 
 // For now print of the rules triggered
 void gencode(tree_t *tree){
+	gentree(tree);
+	print_tree(tree, 0);
 	regstack = NULL;
 	//Put just enough registers on the stack for our gencode to run.
 	if(tree->rval <= 1) pushreg(R0);
-	else if(tree->rval >= 2) pushreg(R1);
+	else if(tree->rval >= 2) { pushreg(R1); pushreg(R0); }
 
 	gencode_helper(tree, tree);
 	regflush(regstack);

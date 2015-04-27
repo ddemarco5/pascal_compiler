@@ -97,7 +97,7 @@ program:
 	'.'
 	{
 		addcode(12);
-		top_scope = scope_pop(top_scope); 
+		top_scope = scope_pop(top_scope);
 	}
 	;
 
@@ -341,7 +341,7 @@ statement
             }
 
 	   /* Gencode portion */
-	   gentree($3);
+	   //gentree($3);
 	   gencode($3);
 	   addcode_t(make_tree(ASSIGNOP, $1, $3));
         }
@@ -383,7 +383,7 @@ statement
 	| READ '(' expression ')'
 	| WRITE '(' expression ')' 
 	{
-		gentree($3);
+		//gentree($3);
 		print_tree($3,0);
 		fprintf(stderr, "\n");
 		gencode($3);
