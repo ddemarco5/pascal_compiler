@@ -28,6 +28,10 @@ int get_branch_type(tree_t *branch){
 			if(branch->right != NULL)
 				return get_branch_type(branch->right);
 			break;
+		case ARRAY_ACCESS:
+			if(branch->right != NULL)
+				return get_branch_type(branch->right);
+			break;
 		default:
 			fprintf(stderr, "OTHER TYPE (%d)\n", branch->type);
 			//exit(1);
