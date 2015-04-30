@@ -524,7 +524,22 @@ factor
 			$$ = make_id(tmp); 
 		}
 	| ID '[' expression ']'
-		{ 
+		{    
+			int x;
+			switch($3->type) {
+				case ID:
+					x = ($3->attribute.sval)->type;
+					if( x != INTEGER){
+						fprintf(stderr, "Non integer type used to index array.\n");
+						exit(1);
+					}
+					break;
+				case RNUM:
+					fprintf(stderr, "Non integer type used to index array.\n");
+					exit(1);
+					break;
+			}
+                         
 			if ((tmp = scope_search_all(top_scope, $1)) == NULL) {
 				fprintf(stderr, "Name %s used but not defined\n", $1);
 				exit(1);
